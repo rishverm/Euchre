@@ -13,6 +13,18 @@ TEST(test_card_ctor) {
     ASSERT_EQUAL(Card::SUIT_HEARTS, c.get_suit());
 }
 
+//create more constructor tests
+
+TEST(test_card_default_constructor) {
+    Card a;
+    ASSERT_EQUAL(Card::RANK_TWO, a.get_rank());
+    ASSERT_EQUAL(Card::SUIT_SPADES, a.get_suit());
+}
+
+TEST(test_card_get_rank) {
+    
+}
+
 // Add more test cases here
 
 TEST_MAIN()
