@@ -17,7 +17,7 @@ TEST(test_pack_default_ctor) {
 TEST(test_pack_non_default_ctor) {
     const string filename = "pack.in";
     ifstream ifs(filename);
-    assert(ifs.is_open());
+    ASSERT_TRUE(ifs.is_open());
     Pack pack(ifs);
     pack.deal_one();
     pack.deal_one();
