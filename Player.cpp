@@ -7,6 +7,7 @@
 //
 
 #include <stdio.h>
+<<<<<<< HEAD
 #include <string>
 #include "Card.h"
 #include "Player.h"
@@ -43,3 +44,5 @@ Player * Player_factory(const std::string &name, const std::string &strategy) {
 std::ostream & operator<<(std::ostream &os, const Player &p) {
     assert(false);
 }
+=======
+>>>>>>> dd2ef5fdd9a64faf69da152ed05911cd5f710d3e

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "Card.h"
+using namespace std;
 // add any necessary #include or using directives here
 
 // rank and suit names -- do not remove these
@@ -27,6 +28,101 @@ constexpr const char* const Card::SUIT_CLUBS;
 constexpr const char* const Card::SUIT_DIAMONDS;
 
 // add your code below
+Card::Card(const string& rank_in, const string& suit_in) {
+
+}
+
+
+Card::Card() :rank(RANK_TWO), suit(SUIT_SPADES) {
+
+}
+
+
+
+string Card::get_rank() const {
+	return "";
+}
+
+
+string Card::get_suit() const {
+	return "";
+}
+
+string Card::get_suit(const string& trump) const {
+	return "";
+}
+
+
+bool Card::is_face() const {
+	return 0;
+}
+
+
+bool Card::is_right_bower(const string& trump) const {
+	return 0;
+}
+
+
+bool Card::is_left_bower(const string& trump) const {
+	return 0;
+}
+
+
+
+bool Card::is_trump(const string& trump) const {
+	return 0;
+}
+
+
+bool operator<(const Card& lhs, const Card& rhs) {
+	return 0;
+	
+}
+
+bool operator<=(const Card& lhs, const Card& rhs) {
+	return 0;
+
+}
+
+bool operator>(const Card& lhs, const Card& rhs) {
+	return 0;
+
+}
+
+bool operator>=(const Card& lhs, const Card& rhs) {
+	return 0;
+
+}
+
+bool operator==(const Card& lhs, const Card& rhs) {
+	return 0;
+
+}
+
+bool operator!=(const Card& lhs, const Card& rhs) {
+	return 0;
+
+}
+
+string Suit_next(const string& suit) {
+	return "";
+	
+}
+
+ostream& operator<<(ostream& os, const Card& card) {
+	return os;
+}
+
+bool Card_less(const Card& a, const Card& b, const std::string& trump) {
+
+	return 0;
+}
+
+bool Card_less(const Card& a, const Card& b, const Card& led_card,
+	const std::string& trump) {
+	return 0;
+}
+
 
 
 // NOTE: We HIGHLY recommend you check out the operator overloading
