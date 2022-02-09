@@ -7,42 +7,40 @@
 //
 
 #include <stdio.h>
-<<<<<<< HEAD
 #include <string>
 #include "Card.h"
 #include "Player.h"
 
 const std::string & get_name() {
-    assert(false);
+    return "";
 }
 
 void add_card(const Card &c) {
-    assert(false);
+    return;
 }
 
 bool make_trump(const Card &upcard, bool is_dealer,
                 int round, std::string &order_up_suit) {
-    assert(false);
+    return 0;
 }
 
 void add_and_discard(const Card &upcard) {
-    assert(false);
+    return;
 }
 
 Card lead_card(const std::string &trump) {
-    assert(false);
+    return Card();
 }
 
 Card play_card(const Card &led_card, const std::string &trump) {
-    assert(false);
+    return Card();
 }
 
 Player * Player_factory(const std::string &name, const std::string &strategy) {
-    assert(false);
+    return nullptr;
 }
 
 std::ostream & operator<<(std::ostream &os, const Player &p) {
-    assert(false);
+    return os;
 }
-=======
->>>>>>> dd2ef5fdd9a64faf69da152ed05911cd5f710d3e
+
