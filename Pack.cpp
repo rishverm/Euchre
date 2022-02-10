@@ -19,3 +19,27 @@
 
 
 using namespace std;
+
+Pack::Pack() {
+    
+}
+
+Pack::Pack(std::istream& pack_input) {
+    
+}
+
+Card Pack::deal_one() {
+    return Card();
+}
+
+void Pack::reset() {
+    return;
+}
+
+void Pack::shuffle() {
+    return;
+}
+
+bool Pack::empty() const {
+    return 0;
+}

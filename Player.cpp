@@ -11,8 +11,10 @@
 #include "Card.h"
 #include "Player.h"
 
+const std::string playerName = "name";
 const std::string & get_name() {
-    return "";
+    
+    return playerName;
 }
 
 void add_card(const Card &c) {
@@ -37,6 +39,17 @@ Card play_card(const Card &led_card, const std::string &trump) {
 }
 
 Player * Player_factory(const std::string &name, const std::string &strategy) {
+    // We need to check the value of strategy and return
+      // the corresponding player type.
+      if (strategy == "Simple") {
+        // The "new" keyword dynamically allocates an object.
+        //return new SimplePlayer(name);
+      }
+      // Repeat for each other type of Player
+      
+      // Invalid strategy if we get here
+      //assert(false);
+      
     return nullptr;
 }
 
