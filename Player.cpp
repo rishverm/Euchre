@@ -11,6 +11,33 @@
 #include "Card.h"
 #include "Player.h"
 
+using namespace std;
+
+class Simple : public Player {
+private:
+    string name;
+    
+public:
+    Simple(const string name_in) {
+        name = name_in;
+    }
+    
+    
+};
+
+class Human : public Player {
+private:
+    string name;
+    
+public:
+    Human(const string name_in) {
+        name = name_in;
+    }
+    
+};
+
+
+
 const std::string playerName = "name";
 const std::string & get_name() {
     
@@ -44,6 +71,8 @@ Player * Player_factory(const std::string &name, const std::string &strategy) {
       if (strategy == "Simple") {
         // The "new" keyword dynamically allocates an object.
         //return new SimplePlayer(name);
+          new Simple = Simple(name);
+        return
       }
       // Repeat for each other type of Player
       
