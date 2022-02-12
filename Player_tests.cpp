@@ -23,15 +23,37 @@ TEST(test_player_get_name_2) {
   delete Gandolf;
 }
 
+//MAKE TRUMP TESTS
+//round == 1 && is_dealer, 0 face cards X
+//round == 1 && is_dealer, 1 face card X
+//round == 1 && is_dealer, 2 face cards X
+//round == 1 && is_dealer, 3 face cards X
+
+//round == 1 && !is_dealer, 0 face cards X
+//round == 1 && !is_dealer, 1 face card X
+//round == 1 && !is_dealer, 2 face cards X
+//round == 1 && !is_dealer, 3 face cards X
+
+//round == 2 && is_dealer, 0 face cards
+//round == 2 && is_dealer, 1 face card
+//round == 2 && is_dealer, 2 face cards
+//round == 2 && is_dealer, 3 face cards
+
+//round == 2 && !is_dealer, 0 face cards
+//round == 2 && !is_dealer, 1 face card
+//round == 2 && !is_dealer, 2 face cards
+//round == 2 && !is_dealer, 3 face cards
+
+
 //test add_card, make_trump
-TEST(test_player_make_trump_simple) {
+TEST(test_player_make_trump_1) {
     // Player's hand
     Player * gollum = Player_factory("Gollum", "Simple");
     gollum->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
-    gollum->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
-    gollum->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
-    gollum->add_card(Card(Card::RANK_KING, Card::SUIT_SPADES));
-    gollum->add_card(Card(Card::RANK_ACE, Card::SUIT_SPADES));
+    gollum->add_card(Card(Card::RANK_THREE, Card::SUIT_SPADES));
+    gollum->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    gollum->add_card(Card(Card::RANK_FIVE, Card::SUIT_SPADES));
+    gollum->add_card(Card(Card::RANK_SIX, Card::SUIT_SPADES));
 
     // Player makes trump
     Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
@@ -44,15 +66,65 @@ TEST(test_player_make_trump_simple) {
     );
 
     // Verify Player's order up and trump suit
-    ASSERT_TRUE(orderup);
-    ASSERT_EQUAL(trump, Card::SUIT_SPADES);
+    ASSERT_FALSE(orderup);
 
     delete gollum;
 }
 
-TEST(test_player_make_trump_human) {
+TEST(test_player_make_trump_2) {
     // Player's hand
-    Player * pippin = Player_factory("Pippin", "Human");
+    Player * smeagol = Player_factory("Smeagol", "Simple");
+    smeagol->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    smeagol->add_card(Card(Card::RANK_THREE, Card::SUIT_SPADES));
+    smeagol->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    smeagol->add_card(Card(Card::RANK_FIVE, Card::SUIT_SPADES));
+    smeagol->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = smeagol->make_trump(
+      nine_spades,    // Upcard
+      true,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_FALSE(orderup);
+
+    delete smeagol;
+}
+
+TEST(test_player_make_trump_3) {
+    // Player's hand
+    Player * legolas = Player_factory("Legolas", "Simple");
+    legolas->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    legolas->add_card(Card(Card::RANK_THREE, Card::SUIT_SPADES));
+    legolas->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    legolas->add_card(Card(Card::RANK_KING, Card::SUIT_SPADES));
+    legolas->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = legolas->make_trump(
+      nine_spades,    // Upcard
+      true,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, Card::SUIT_SPADES);
+    
+    delete legolas;
+}
+
+TEST(test_player_make_trump_4) {
+    // Player's hand
+    Player * pippin = Player_factory("Pippin", "Simple");
     pippin->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
     pippin->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
     pippin->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
@@ -64,7 +136,7 @@ TEST(test_player_make_trump_human) {
     string trump;
     bool orderup = pippin->make_trump(
       nine_spades,    // Upcard
-      true,           // Gollum is also the dealer
+      true,           // Player is also the dealer
       1,              // First round
       trump           // Suit ordered up (if any)
     );
@@ -76,22 +148,124 @@ TEST(test_player_make_trump_human) {
     delete pippin;
 }
 
-TEST(test_player_make_trump_edgecase_1) {
-    //no cards of same suite as trump
+TEST(test_player_make_trump_5) {
+    // Player's hand
+    Player * aragorn = Player_factory("Aragorn", "Simple");
+    aragorn->add_card(Card(Card::RANK_KING, Card::SUIT_HEARTS));
+    aragorn->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
+    aragorn->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    aragorn->add_card(Card(Card::RANK_QUEEN, Card::SUIT_HEARTS));
+    aragorn->add_card(Card(Card::RANK_QUEEN, Card::SUIT_DIAMONDS));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = aragorn->make_trump(
+      nine_spades,    // Upcard
+      false,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_FALSE(orderup);
+    
+    delete aragorn;
+}
+
+TEST(test_player_make_trump_6) {
+    // Player's hand
+    Player * arwen = Player_factory("Arwen", "Simple");
+    arwen->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    arwen->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
+    arwen->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    arwen->add_card(Card(Card::RANK_FIVE, Card::SUIT_SPADES));
+    arwen->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = arwen->make_trump(
+      nine_spades,    // Upcard
+      false,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_FALSE(orderup);
+    
+    delete arwen;
+}
+
+
+TEST(test_player_make_trump_7) {
     // Player's hand
     Player * merry = Player_factory("Merry", "Simple");
     merry->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
     merry->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
+    merry->add_card(Card(Card::RANK_JACK, Card::SUIT_CLUBS));
+    merry->add_card(Card(Card::RANK_JACK, Card::SUIT_SPADES));
     merry->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
-    merry->add_card(Card(Card::RANK_KING, Card::SUIT_SPADES));
-    merry->add_card(Card(Card::RANK_ACE, Card::SUIT_SPADES));
 
     // Player makes trump
-    Card nine_diamonds(Card::RANK_NINE, Card::SUIT_DIAMONDS);
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
     string trump;
     bool orderup = merry->make_trump(
-      nine_diamonds,    // Upcard
-      false,           // Bob is also the dealer
+      nine_spades,    // Upcard
+      false,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, Card::SUIT_SPADES);
+    
+    delete merry;
+}
+
+TEST(test_player_make_trump_8) {
+    // Player's hand
+    Player * boromir = Player_factory("Merry", "Simple");
+    boromir->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    boromir->add_card(Card(Card::RANK_ACE, Card::SUIT_SPADES));
+    boromir->add_card(Card(Card::RANK_JACK, Card::SUIT_CLUBS));
+    boromir->add_card(Card(Card::RANK_JACK, Card::SUIT_SPADES));
+    boromir->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = boromir->make_trump(
+      nine_spades,    // Upcard
+      false,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, Card::SUIT_SPADES);
+    
+    delete boromir;
+}
+
+TEST(test_player_make_trump_1_0) {
+    // Player's hand
+    Player * gollum = Player_factory("Gollum", "Simple");
+    gollum->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    gollum->add_card(Card(Card::RANK_THREE, Card::SUIT_SPADES));
+    gollum->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    gollum->add_card(Card(Card::RANK_FIVE, Card::SUIT_SPADES));
+    gollum->add_card(Card(Card::RANK_SIX, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = gollum->make_trump(
+      nine_spades,    // Upcard
+      true,           // Gollum is also the dealer
       2,              // First round
       trump           // Suit ordered up (if any)
     );
@@ -99,26 +273,24 @@ TEST(test_player_make_trump_edgecase_1) {
     // Verify Player's order up and trump suit
     ASSERT_FALSE(orderup);
 
-    delete merry;
+    delete gollum;
 }
 
-
-TEST(test_player_make_trump_edgecase_2) {
-    //cards of same suite as trump, but no face cards of same suite as trump
+TEST(test_player_make_trump_2) {
     // Player's hand
-    Player * merry = Player_factory("Merry", "Simple");
-    merry->add_card(Card(Card::RANK_TWO, Card::SUIT_CLUBS));
-    merry->add_card(Card(Card::RANK_EIGHT, Card::SUIT_CLUBS));
-    merry->add_card(Card(Card::RANK_QUEEN, Card::SUIT_HEARTS));
-    merry->add_card(Card(Card::RANK_KING, Card::SUIT_HEARTS));
-    merry->add_card(Card(Card::RANK_ACE, Card::SUIT_DIAMONDS));
+    Player * smeagol = Player_factory("Smeagol", "Simple");
+    smeagol->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    smeagol->add_card(Card(Card::RANK_THREE, Card::SUIT_SPADES));
+    smeagol->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    smeagol->add_card(Card(Card::RANK_FIVE, Card::SUIT_SPADES));
+    smeagol->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
 
     // Player makes trump
-    Card six_clubs(Card::RANK_SIX, Card::SUIT_CLUBS);
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
     string trump;
-    bool orderup = merry->make_trump(
-      six_clubs,    // Upcard
-      false,           // Bob is also the dealer
+    bool orderup = smeagol->make_trump(
+      nine_spades,    // Upcard
+      true,           // Player is also the dealer
       1,              // First round
       trump           // Suit ordered up (if any)
     );
@@ -126,7 +298,162 @@ TEST(test_player_make_trump_edgecase_2) {
     // Verify Player's order up and trump suit
     ASSERT_FALSE(orderup);
 
+    delete smeagol;
+}
+
+TEST(test_player_make_trump_3) {
+    // Player's hand
+    Player * legolas = Player_factory("Legolas", "Simple");
+    legolas->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    legolas->add_card(Card(Card::RANK_THREE, Card::SUIT_SPADES));
+    legolas->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    legolas->add_card(Card(Card::RANK_KING, Card::SUIT_SPADES));
+    legolas->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = legolas->make_trump(
+      nine_spades,    // Upcard
+      true,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, Card::SUIT_SPADES);
+    
+    delete legolas;
+}
+
+TEST(test_player_make_trump_4) {
+    // Player's hand
+    Player * pippin = Player_factory("Pippin", "Simple");
+    pippin->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    pippin->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
+    pippin->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+    pippin->add_card(Card(Card::RANK_KING, Card::SUIT_SPADES));
+    pippin->add_card(Card(Card::RANK_ACE, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = pippin->make_trump(
+      nine_spades,    // Upcard
+      true,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, Card::SUIT_SPADES);
+
+    delete pippin;
+}
+
+TEST(test_player_make_trump_5) {
+    // Player's hand
+    Player * aragorn = Player_factory("Aragorn", "Simple");
+    aragorn->add_card(Card(Card::RANK_KING, Card::SUIT_HEARTS));
+    aragorn->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
+    aragorn->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    aragorn->add_card(Card(Card::RANK_QUEEN, Card::SUIT_HEARTS));
+    aragorn->add_card(Card(Card::RANK_QUEEN, Card::SUIT_DIAMONDS));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = aragorn->make_trump(
+      nine_spades,    // Upcard
+      false,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_FALSE(orderup);
+    
+    delete aragorn;
+}
+
+TEST(test_player_make_trump_6) {
+    // Player's hand
+    Player * arwen = Player_factory("Arwen", "Simple");
+    arwen->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    arwen->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
+    arwen->add_card(Card(Card::RANK_FOUR, Card::SUIT_SPADES));
+    arwen->add_card(Card(Card::RANK_FIVE, Card::SUIT_SPADES));
+    arwen->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = arwen->make_trump(
+      nine_spades,    // Upcard
+      false,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_FALSE(orderup);
+    
+    delete arwen;
+}
+
+
+TEST(test_player_make_trump_7) {
+    // Player's hand
+    Player * merry = Player_factory("Merry", "Simple");
+    merry->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    merry->add_card(Card(Card::RANK_EIGHT, Card::SUIT_SPADES));
+    merry->add_card(Card(Card::RANK_JACK, Card::SUIT_CLUBS));
+    merry->add_card(Card(Card::RANK_JACK, Card::SUIT_SPADES));
+    merry->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = merry->make_trump(
+      nine_spades,    // Upcard
+      false,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, Card::SUIT_SPADES);
+    
     delete merry;
+}
+
+TEST(test_player_make_trump_8) {
+    // Player's hand
+    Player * boromir = Player_factory("Merry", "Simple");
+    boromir->add_card(Card(Card::RANK_TWO, Card::SUIT_SPADES));
+    boromir->add_card(Card(Card::RANK_ACE, Card::SUIT_SPADES));
+    boromir->add_card(Card(Card::RANK_JACK, Card::SUIT_CLUBS));
+    boromir->add_card(Card(Card::RANK_JACK, Card::SUIT_SPADES));
+    boromir->add_card(Card(Card::RANK_QUEEN, Card::SUIT_SPADES));
+
+    // Player makes trump
+    Card nine_spades(Card::RANK_NINE, Card::SUIT_SPADES);
+    string trump;
+    bool orderup = boromir->make_trump(
+      nine_spades,    // Upcard
+      false,           // Player is also the dealer
+      1,              // First round
+      trump           // Suit ordered up (if any)
+    );
+
+    // Verify Player's order up and trump suit
+    ASSERT_TRUE(orderup);
+    ASSERT_EQUAL(trump, Card::SUIT_SPADES);
+    
+    delete boromir;
 }
 
 
