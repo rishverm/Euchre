@@ -78,7 +78,7 @@ public:
     void add_and_discard(const Card &upcard);
     
     Card lead_card(const std::string &trump);
-    
+        
     Card play_card(const Card &led_card, const std::string &trump);
 };
 
