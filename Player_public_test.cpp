@@ -40,7 +40,6 @@ TEST(test_player_insertion) {
   delete human;
   delete alice;
 }
-
 TEST(test_player_get_name) {
   // Create a player and verify that get_name() returns the player's name
   Player * alice = Player_factory("Alice", "Simple");
