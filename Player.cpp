@@ -92,11 +92,7 @@ public:
         hand.erase(hand.begin()+minIndex);
     }
     
-<<<<<<< HEAD
-    Card lead_card(const std::string &trump);
-        
-    Card play_card(const Card &led_card, const std::string &trump);
-=======
+    
     Card lead_card(const std::string& trump) {
         Card cardMax = hand[0];
         int iterator = 0;
@@ -116,7 +112,7 @@ public:
         Card cardMax = hand[0];
         Card cardMin = hand[0];
         int iterator = 0;
-        bool hasLed;
+        bool hasLed = false;
         for (unsigned int card = 0; card < hand.size(); card++) {
             if (hand[card].get_suit() == led_card.get_suit()) {
                 hasLed = true;
@@ -146,7 +142,6 @@ public:
         
 
     }
->>>>>>> 0720b558216aeeda9ed467e9063ce0dabf2d23b8
 };
 
 class Human : public Player {
@@ -195,6 +190,6 @@ Player * Player_factory(const std::string &name, const std::string &strategy) {
 }
 
 std::ostream & operator<<(std::ostream &os, const Player &p) {
-    return os;
+   return os;
 }
 
