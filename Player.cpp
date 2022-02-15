@@ -12,6 +12,9 @@
 #include "Player.h"
 #include <vector>
 #include <iostream>
+#include <algorithm>
+
+using namespace std;
 
 class Simple : public Player {
 private:
@@ -44,7 +47,6 @@ Simple::Simple() {
 
 Simple::Simple(const std::string &name_in) {
     name = name_in;
-    hand = {};
 }
 
 const std::string & Simple::get_name() const {
@@ -217,12 +219,17 @@ public:
     
 };
 
+void sort(vector<Card> &hand) {
+    std::sort(hand.begin(), hand.end());
+    
+    
+}
+
 Human::Human() {
 }
 
 Human::Human(const std::string &name_in) {
     name = name_in;
-    hand = {};
 }
 
 const std::string & Human::get_name() const{
@@ -236,6 +243,15 @@ void Human::add_card(const Card &c) {
 
 bool Human::make_trump(const Card &upcard, bool is_dealer,
                 int round, std::string &order_up_suit) const {
+    sort(&hand);
+    for (unsigned int card = 0; card < hand.size(); card++) {
+        cout << "Human player " << get_name()
+        << "'s hand: [" << card << "] "
+        << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+    }
+    
+    
+    
     return 0;
 }
 
@@ -253,6 +269,7 @@ Card Human::play_card(const Card &led_card, const std::string &trump) {
 
 
 
+
 Player * Player_factory(const std::string &name, const std::string &strategy) {
     // We need to check the value of strategy and return
       // the corresponding player type.
@@ -264,13 +281,14 @@ Player * Player_factory(const std::string &name, const std::string &strategy) {
     }
     else {
       // Invalid strategy if we get here
-      assert(false);
+        return nullptr;
     }
       
-    return nullptr;
+    
 }
 
 std::ostream & operator<<(std::ostream &os, const Player &p) {
+    os << p.get_name();
    return os;
 }
 

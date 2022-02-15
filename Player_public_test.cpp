@@ -18,16 +18,7 @@ using namespace std;
 // YOU NEED TO WRITE YOUR OWN COMPREHENSIVE TEST CASES IN Player_tests.cpp
 
 TEST(test_player_insertion) {
-  // Create a Human player
-  Player * human = Player_factory("NotRobot", "Human");
-
-  // Print the player using the stream insertion operator
-  ostringstream oss1;
-  oss1 << * human;
-
-  // Verify that the output is the player's name
-  ASSERT_EQUAL(oss1.str(), "NotRobot");
-
+  
   // Create a Simple player
   Player * alice = Player_factory("Alice", "Simple");
 
@@ -35,6 +26,17 @@ TEST(test_player_insertion) {
   ostringstream oss2;
   oss2 << *alice;
   ASSERT_EQUAL(oss2.str(), "Alice");
+    
+// Create a Human player
+    Player * human = Player_factory("NotRobot", "Human");
+
+    // Print the player using the stream insertion operator
+    ostringstream oss1;
+    oss1 << * human;
+
+    // Verify that the output is the player's name
+    ASSERT_EQUAL(oss1.str(), "NotRobot");
+
 
   // Clean up players that were created using Player_factory()
   delete human;
