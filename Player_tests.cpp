@@ -8,7 +8,7 @@
 using namespace std;
 
 //Test get_name, Player_factory
-TEST(test_player_get_name_basic) {
+TEST(test_player_get_name_1) {
     Player * alice = Player_factory("Alice", "Simple");
     ASSERT_EQUAL("Alice", alice->get_name());
 
@@ -19,6 +19,14 @@ TEST(test_player_get_name_2) {
   // Create a player and verify that get_name() returns the player's name
   Player * Gandolf = Player_factory("Gandolf", "Human");
   ASSERT_EQUAL(Gandolf->get_name(), "Gandolf");
+    
+  delete Gandolf;
+}
+
+TEST(test_player_get_name_3) {
+  // Create a player and verify that get_name() returns the player's name
+  Player * Gandolf = Player_factory("", "Human");
+  ASSERT_EQUAL(Gandolf->get_name(), "");
     
   delete Gandolf;
 }
@@ -600,7 +608,7 @@ TEST(test_player_lead_card_edgecase_4_2) {
     bob->add_card(Card(Card::RANK_ACE, Card::SUIT_HEARTS));
       // Bob adds a card to his hand and discards one card
     
-    bob->add_and_discard(Card(Card::RANK_NINE, Card::SUIT_HEARTS) // upcard
+    bob->add_and_discard(Card(Card::RANK_KING, Card::SUIT_HEARTS) // upcard
       );
 
       // Bob leads

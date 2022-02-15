@@ -331,6 +331,22 @@ bool Card_less(const Card& a, const Card& b, const std::string& trump) {
     //neither trump, different suit, different rank: compare ranks
     //neither trump, different suits, same rank: compare suit weight
     
+    if (a.is_right_bower(trump)) {
+        return false;
+    }
+    
+    if (b.is_right_bower(trump)) {
+        return true;
+    }
+    
+    if (a.is_left_bower(trump)) {
+        return false;
+    }
+    
+    if (b.is_left_bower(trump)) {
+        return true;
+    }
+    
     //a or b or both are trump
     if (a.get_suit() == trump || b.get_suit() == trump) {
         if (a.get_suit() == trump && b.get_suit() != trump) {
@@ -352,7 +368,7 @@ bool Card_less(const Card& a, const Card& b, const std::string& trump) {
 
         }
     }
-    
+
     //neither a nor b trump
     bool lessThan = operator<(a, b);
     if (lessThan) {
