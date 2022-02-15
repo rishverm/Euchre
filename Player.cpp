@@ -13,6 +13,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
 using namespace std;
 
@@ -219,11 +220,7 @@ public:
     
 };
 
-void sort(vector<Card> &hand) {
-    std::sort(hand.begin(), hand.end());
-    
-    
-}
+
 
 Human::Human() {
 }
@@ -237,34 +234,75 @@ const std::string & Human::get_name() const{
 }
 
 void Human::add_card(const Card &c) {
+    sort(hand.begin(), hand.end());
     hand.push_back(c);
     return;
 }
 
 bool Human::make_trump(const Card &upcard, bool is_dealer,
                 int round, std::string &order_up_suit) const {
-    sort(&hand);
+    
+    string suit;
     for (unsigned int card = 0; card < hand.size(); card++) {
         cout << "Human player " << get_name()
         << "'s hand: [" << card << "] "
         << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
     }
-    
-    
-    
-    return 0;
+    cout << "Human player " << get_name() << ", please enter a suit or \"pass\":" << endl;
+    if (suit == "pass") {
+        return false;
+    }
+    else {
+        order_up_suit = suit;
+        return true;
+    }
 }
 
 void Human::add_and_discard(const Card &upcard) {
-    return;
+    sort(hand.begin(), hand.end());
+    int cardDiscardNum;
+    for (unsigned int card = 0; card < hand.size(); card++) {
+        cout << "Human player " << get_name()
+            << "'s hand: [" << card << "] "
+            << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+    }
+    cout << "Discard upcard : [-1]" << endl;
+    cout << "Human player " << get_name() << ", please select a card : " << endl;
+    cin >> cardDiscardNum;
+    if (cardDiscardNum != -1) {
+        hand.erase(hand.begin() + cardDiscardNum);
+        add_card(upcard);
+    }
 }
 
 Card Human::lead_card(const std::string &trump) {
-    assert(false);
+    sort(hand.begin(), hand.end());
+    int cardLeadNum;
+    for (unsigned int card = 0; card < hand.size(); card++) {
+        cout << "Human player " << get_name()
+            << "'s hand: [" << card << "] "
+            << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+    }
+    cout << "Human player " + get_name() + ", please select a card:" << endl;
+    cin >> cardLeadNum;
+    Card lead = hand[cardLeadNum];
+    hand.erase(hand.begin() + cardLeadNum);
+    return lead;
 }
 
 Card Human::play_card(const Card &led_card, const std::string &trump) {
-    assert(false);
+    sort(hand.begin(), hand.end());
+    int cardPlayNum;
+    for (unsigned int card = 0; card < hand.size(); card++) {
+        cout << "Human player " << get_name()
+            << "'s hand: [" << card << "] "
+            << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+    }
+    cout << "Human player " + get_name() + ", please select a card:" << endl;
+    cin >> cardPlayNum;
+    Card play = hand[cardPlayNum];
+    hand.erase(hand.begin() + cardPlayNum);
+    return play;
 }
 
 
@@ -281,7 +319,9 @@ Player * Player_factory(const std::string &name, const std::string &strategy) {
     }
     else {
       // Invalid strategy if we get here
-        return nullptr;
+        
+      assert(false);
+      return nullptr;
     }
       
     
