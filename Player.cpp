@@ -55,7 +55,9 @@ const std::string & Simple::get_name() const {
 }
 
 void Simple::add_card(const Card &c) {
+    
     hand.push_back(c);
+    
 }
 
 bool Simple::make_trump(const Card &upcard, bool is_dealer,
@@ -104,14 +106,17 @@ bool Simple::make_trump(const Card &upcard, bool is_dealer,
 void Simple::add_and_discard(const Card& upcard) {
     add_card(upcard);
     Card min = hand[0];
+    string trump = upcard.get_suit();
     std::vector <Card>:: iterator handLoop;
     handLoop = hand.begin();
     int minIndex = 0;
     int iter = 0;
     
+    
+    
     for (handLoop = hand.begin() + 1; handLoop != hand.end(); ++handLoop) {
         iter++;
-        if (Card_less(hand[iter], min, upcard.get_suit())) {
+        if (Card_less(hand[iter], min, trump)) {
             min = hand[iter];
             minIndex = iter;
         }
@@ -126,7 +131,7 @@ Card Simple::lead_card(const std::string& trump) {
     Card cardMax = hand[0];
     int iterator = 0;
     bool allCardsAreTrump = true;
-    for (unsigned int card = 1; card < hand.size(); card++) {
+    for (unsigned int card = 0; card < hand.size(); card++) {
         if (!(hand[card].is_trump(trump))) {
             allCardsAreTrump = false;
             cardMax = hand[card];
@@ -166,14 +171,14 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     bool hasLed = false;
     
     for (unsigned int card = 0; card < hand.size(); card++) {
-        if (hand[card].get_suit() == led_card.get_suit()) {
+        if (hand[card].get_suit(trump) == led_card.get_suit(trump)) {
             hasLed = true;
             break;
         }
     }
     if (hasLed) {
         for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(cardMax, hand[card], led_card.get_suit())) {
+            if (Card_less(cardMax, hand[card], led_card.get_suit(trump))) {
                 cardMax = hand[card];
                 iterator = card;
             }
@@ -183,7 +188,7 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     }
     else {
         for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(hand[card], cardMin,led_card, trump)) {
+            if (Card_less(hand[card], cardMin, trump)) {
                 cardMin = hand[card];
                 iterator = card;
             }
