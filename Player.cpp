@@ -317,10 +317,14 @@ Player * Player_factory(const std::string &name, const std::string &strategy) {
     // We need to check the value of strategy and return
       // the corresponding player type.
     if (strategy == "Simple") {
-        return new Simple(name);
+        Simple *bot = new Simple(name);
+        return bot;
+        delete bot;
     }
     else if (strategy == "Human") {
-        return new Human(name);
+        Human* person = new Human(name);
+        return person;
+        delete person;
     }
     else {
       // Invalid strategy if we get here

@@ -24,6 +24,7 @@ TEST(test_player_get_name_1) {
     
     delete alice;
     delete Gandolf;
+    delete empty;
 }
 
 //MAKE TRUMP TESTS
