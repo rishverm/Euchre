@@ -10,6 +10,31 @@
 
 using namespace std;
 
+
+//
+/*
+Player * setUpPlayers(char *argv[], int argc) {
+    Player *players[4];
+    int ind = 0;
+    for (int i = 4; i < argc; i+=2) {
+        players[ind] = Player_factory(argv[i], (argv[i + 1]));
+        ++ind;
+    }
+    return players[0];
+}
+
+*/
+
+Player * setUpPlayers(char *argv[], int argc) {
+    int ind = 0;
+    Player *players[4];
+    for (int i = 4; i < argc; i+=2) {
+        players[ind] = Player_factory(argv[i], (argv[i + 1]));
+        ++ind;
+    }
+    return players[0];
+}
+
 int main(int argc, char *argv[]) {
     if (argc != 12) {
         cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
@@ -95,25 +120,54 @@ int main(int argc, char *argv[]) {
         cout << argv[i] << " ";
     }
     
-    /*
-    Player *player1 = Player_factory(argv[4], argv[5]);
-    Player *player2 = Player_factory(argv[6], argv[7]);
-    Player *player3 = Player_factory(argv[8], argv[9]);
-    Player *player4 = Player_factory(argv[10], argv[11]);
-    */
+    
+    
+    
+    
     class Game {
     private:
         Player *players[4];
+        string shuffle;
         //should this be 24?
         Pack *cards[24];
         int score[2];
     
     public:
-        void setUpPlayers();
+        
+        Game(int argc, char *argv[]) {
+            int ind = 0;
+            for (int i = 4; i < argc; i+=2) {
+                players[ind] = Player_factory(argv[i], (argv[i + 1]));
+                ++ind;
+            }
+            shuffle = argv[2];
+            
+            cards = Pack(&file);
+            
+            
+            
+            
+            
+        }
+            
+        
+        //is this a good way to store and create the players array?
+        
+
+        
         void setUpTable();
+        
+        void makingTrump();
+        
+        void trickTaking();
+        
+        void scoring();
         
     };
     
+    
+    Player *player_array = setUpPlayers(argv, argc);
+    //Game *y = new Game(&player_array);
     
     
     
