@@ -25,13 +25,8 @@ Pack::Pack() {
     Pack::next = 0;
     for (int i = 0; i < NUM_SUITS; ++i) {
         for (int j = 7; j < NUM_RANKS; ++j) {
-            
-            cards[(6 * i) + (j - 7)] = Card(RANK_NAMES_BY_WEIGHT[j], SUIT_NAMES_BY_WEIGHT[i]);
-           // i = 0: 0, 1, 2, 3, 4, 5,
-            //i = 1: 6, 7, 8, 9, 10, 11
-           // i = 2: 12, 13, 14, 15, 16, 17
-           // i = 3: 18, 19, 20, 21, 22, 23
-            
+            int k = (6 * i) + (j - 7);
+            cards[k] = Card(RANK_NAMES_BY_WEIGHT[j], SUIT_NAMES_BY_WEIGHT[i]);
         }
     }
 }

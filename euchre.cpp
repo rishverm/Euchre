@@ -1,3 +1,4 @@
+//Project UID 1d9f47bfc76643019cfbf037641defe1
 
 #include <cstdlib>
 #include <fstream>
@@ -6,6 +7,7 @@
 #include <string>
 #include "Player.h"
 #include "Pack.h"
+
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -93,23 +95,26 @@ int main(int argc, char *argv[]) {
         cout << argv[i] << " ";
     }
     
+    /*
+    Player *player1 = Player_factory(argv[4], argv[5]);
+    Player *player2 = Player_factory(argv[6], argv[7]);
+    Player *player3 = Player_factory(argv[8], argv[9]);
+    Player *player4 = Player_factory(argv[10], argv[11]);
+    */
     class Game {
     private:
-        Player *players[4] = {player1, ;
+        Player *players[4];
         //should this be 24?
         Pack *cards[24];
         int score[2];
     
     public:
-        void setUpPlayers(
-        void setUpTable(argv[2], argv[3], arg)
+        void setUpPlayers();
+        void setUpTable();
         
     };
     
-    Player *player1 = Player_factory(argv[4], argv[5]);
-    Player *player2 = Player_factory(argv[6], argv[7]);
-    Player *player3 = Player_factory(argv[8], argv[9]);
-    Player *player4 = Player_factory(argv[10], argv[11]);
+    
     
     
     
