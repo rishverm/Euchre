@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
         Player *players[4];
         string shuffle;
         //should this be 24?
-        Pack *cards[24];
+        Pack *pack;
         int score[2];
     
     public:
@@ -142,7 +142,10 @@ int main(int argc, char *argv[]) {
             }
             shuffle = argv[2];
             
-            cards = Pack(&file);
+            ifstream fin;
+            fin.open(argv[2]);
+            Pack gamePack(fin);
+            pack = &gamePack;
             
             
             
