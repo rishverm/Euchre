@@ -10,27 +10,18 @@ using namespace std;
 
 
 
-
-
-
-
-
-
-
 class Game {
 private:
-    Player* players[4];
+    Player * players[4];
+    Player * ordered[4];
     string shuffle;
 
-    Pack* pack;
+    Pack pack;
     int score[2];
     string team[2];
     int hand;
 
 public:
-    
-    
-
     Game(int* argc, char* argv[]) {
         int ind = 0;
         for (int i = 4; i < *argc; i += 2) {
@@ -40,12 +31,12 @@ public:
         shuffle = argv[2];
 
         ifstream fin;
-        fin.open(argv[2]);
+        fin.open(argv[1]);
         Pack gamePack(fin);
-        pack = &gamePack;
+        pack = gamePack;
         score[0] = 0;
         score[1] = 0;
-        hand = 1;
+        hand = 0;
         team[0] = players[0]->get_name() + " and " + players[2]->get_name();
         team[1] = players[1]->get_name() + " and " + players[3]->get_name();
     }
@@ -57,11 +48,41 @@ public:
 
     void deal_player(Player* player, int number) {
         for (int i = 0; i < number; i++) {
-            player->add_card(pack->deal_one());
+            player->add_card(pack.deal_one());
         }
     }
     
+    //NEW FUNCTION that orders players into a new array
+    void players_ordered() {
+        for (int i = 0; i < 4; i++) {
+            ordered[i] = players[(dealer_index(hand) + i + 1) % 4];
+        }
+        
+    }
+    
     void deal(Player * dealer) {
+        
+        players_ordered();
+        for (int i = 0; i < 4; i++) {
+            if (i % 2 == 0) {
+                deal_player(ordered[i], 3);
+            }
+            else {
+                deal_player(ordered[i], 2);
+            }
+
+    
+        }
+        
+        for (int i = 0; i < 4; i++) {
+            if (i % 2 == 0) {
+                deal_player(ordered[i], 2);
+            }
+            else {
+                deal_player(ordered[i], 3);
+            }
+        }
+        /*
         
         //dealer + 1 = 3 cards
         deal_player(players[(dealer_index(hand) + 1) % 4], 3);
@@ -80,7 +101,7 @@ public:
         deal_player(players[(dealer_index(hand) + 3) % 4], 2);
         //dealer = 3 cards
         deal_player(players[(dealer_index(hand) + 4) % 4], 3);
-        
+        */
         
     }
     
@@ -91,10 +112,12 @@ public:
         // ...
         //if hand = 4, player 0 deals
     }
+    
+    
 
-    void setUpTable() {
+    Card setUpTable() {
         if (shuffle == "shuffle") {
-            pack->shuffle();
+            pack.shuffle();
         }
         
         deal(players[dealer_index(hand)]);
@@ -102,9 +125,37 @@ public:
         
         cout << "Hand " << hand << endl;
         cout << players[dealer_index(hand)]->get_name() << " deals" << endl;
+        Card upCard = pack.deal_one();
+        cout << upCard.get_rank() << " of " << upCard.get_suit() << " turned up" << endl;
+        
+        return upCard;
+    }
+    
+    bool is_dealer(Player * player) {
+        if (players[dealer_index(hand)] == player) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
-    void makingTrump();
+    string makingTrump(Card upCard) {
+        string trump = "";
+        for (int j = 1; j <= 2; ++j) {
+            for (int i = 0; i < 4; ++i) {
+                Player *player = ordered[i];
+                string upCardSuit = upCard.get_suit();
+                if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
+                    trump = upCardSuit;
+                    break;
+                }
+            }
+        }
+        return trump;
+        }
+    
+        
 
     void trickTaking();
 
@@ -131,7 +182,7 @@ public:
     }
 
 
-    Pack* getPack() {
+    Pack getPack() {
         return pack;
     }
 
@@ -216,9 +267,15 @@ int main(int argc, char* argv[]) {
         cout << argv[i] << " ";
     }
     
-    Game* x = new Game(&argc, argv);
-    cout << x->deal_player(, 3);
     
+    Game x = Game(&argc, argv);
+    Card upCard = x.setUpTable();
+    x.makingTrump(upCard);
+    
+    
+    
+    
+    //delete all the players
 
 }
 

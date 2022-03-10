@@ -54,7 +54,7 @@ void Pack::reset() {
 }
 
 void Pack::shuffle() {
-    reset();
+    
     
     for (int j = 0; j < 7; ++j) {
     //create array for first half
@@ -62,9 +62,9 @@ void Pack::shuffle() {
     //new for loop that assigns to cards (every other)
         
         const int half = PACK_SIZE / 2;
-            Card firstHalf[half];
-            Card secondHalf[half];
-    
+        std::array<Card, half> firstHalf;
+        std::array<Card, half> secondHalf;
+           
         //first half
         for (int i = 0; i < half; ++i) {
             firstHalf[i] = cards[i] ;
@@ -85,7 +85,9 @@ void Pack::shuffle() {
             cards[counter] = firstHalf[i];
             ++counter;
         }
-        }
+    }
+    
+    reset();
     
     return;
 }

@@ -319,12 +319,12 @@ Player * Player_factory(const std::string &name, const std::string &strategy) {
     if (strategy == "Simple") {
         Simple *bot = new Simple(name);
         return bot;
-        delete bot;
+        
     }
     else if (strategy == "Human") {
         Human* person = new Human(name);
         return person;
-        delete person;
+        
     }
     else {
       // Invalid strategy if we get here
