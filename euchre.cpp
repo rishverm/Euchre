@@ -5,9 +5,8 @@
 #include <fstream>
 #include "Pack.h"
 #include "Card.h"
-#include "euchre.h"
+#include <cstring>
 using namespace std;
-
 
 
 class Game {
@@ -148,16 +147,93 @@ public:
                 string upCardSuit = upCard.get_suit();
                 if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
                     trump = upCardSuit;
+                    cout << player->get_name() << " orders up " << upCardSuit << endl;
+                    cout << endl;
                     break;
+                }
+                else {
+                    cout << player->get_name() << " passes" << endl;
                 }
             }
         }
         return trump;
-        }
+    }
     
+    int getIndex(Player *player) {
+        for (int i = 0; i < 4; ++i) {
+            if (ordered[i] == player) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    //rewrites ordered s.t. the first index is the player who won the trick and shifts everyone else after in order
+    void shiftOrdered(Player *trickTaker) {
+        getIndex(trickTaker);
+        Player * tempArray[4];
+        for (int i = 0; i < 4;  ++i) {
+            tempArray[i] = ordered[(getIndex(trickTaker) + i) % 4];
+        }
         
+        for (int i = 0; i < 4; ++i) {
+            ordered[i] = tempArray[i];
+        }
+        
+        
+    }
 
-    void trickTaking();
+    void trickTaking(string trump) {
+        for (int i = 0; i < 5; ++i) {
+        Card ledCard = ordered[0]->lead_card(trump);
+        cout << ledCard.get_rank() << " of " << ledCard.get_suit() << " led by " << ordered[0]->get_name() << endl;
+        Card maxCard = ledCard;
+        
+        Card card1 = ordered[1]->play_card(ledCard, trump);
+        cout << card1.get_rank() << " of " << card1.get_suit() << " played by " << ordered[1]->get_name() << endl;
+            if (Card_less(maxCard, card1, ledCard, trump)) { maxCard = card1; }
+        
+        Card card2 = ordered[2]->play_card(ledCard, trump);
+        cout << card2.get_rank() << " of " << card2.get_suit() << " played by " << ordered[2]->get_name() << endl;
+            if (Card_less(maxCard, card2, ledCard, trump)) { maxCard = card2; }
+        
+        Card card3 = ordered[3]->play_card(ledCard, trump);
+        cout << card1.get_rank() << " of " << card3.get_suit() << " played by " << ordered[3]->get_name() << endl;
+            if (Card_less(maxCard, card1, ledCard, trump)) { maxCard = card3; }
+        
+        
+        if (maxCard == ledCard) {
+            cout << ordered[0]->get_name() << " takes the trick" << endl;
+            ++score[0];
+            shiftOrdered(ordered[0]);
+            //newindex starts at player after player0
+        }
+        
+        else if (maxCard == card1) {
+            cout << ordered[1]->get_name() << " takes the trick" << endl;
+            ++score[1];
+            shiftOrdered(ordered[1]);
+            
+            //new index starts at player after player1
+        }
+        
+        else if (maxCard == card2) {
+            cout << ordered[2]->get_name() << " takes the trick" << endl;
+            ++score[0];
+            shiftOrdered(ordered[2]);
+        }
+        
+        else {
+            cout << ordered[3]->get_name() << " takes the trick" << endl;
+            ++score[1];
+            shiftOrdered(ordered[3]);
+        }
+        cout << endl;
+        }
+        
+        
+        
+    }
 
     void scoring();
 
@@ -264,18 +340,24 @@ int main(int argc, char* argv[]) {
     }
     
     for (int i = 0; i < argc; ++i) {
-        cout << argv[i] << " ";
+        if (i == argc - 1) {
+            cout << argv[i] << " " << endl;
+        }
+        else {
+            cout << argv[i] << " ";
+        }
     }
+    
     
     
     Game x = Game(&argc, argv);
     Card upCard = x.setUpTable();
-    x.makingTrump(upCard);
+    string trump = x.makingTrump(upCard);
+    x.trickTaking(trump);
     
     
     
-    
-    //delete all the players
+    //delete all the players!!!!!!
 
 }
 
