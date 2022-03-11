@@ -17,6 +17,7 @@ private:
 
     Pack pack;
     int score[2];
+    int handScore[2];
     string team[2];
     int hand;
 
@@ -35,6 +36,8 @@ public:
         pack = gamePack;
         score[0] = 0;
         score[1] = 0;
+        handScore[0] = 0;
+        handScore[1] = 0;
         hand = 0;
         team[0] = players[0]->get_name() + " and " + players[2]->get_name();
         team[1] = players[1]->get_name() + " and " + players[3]->get_name();
@@ -198,20 +201,20 @@ public:
             if (Card_less(maxCard, card2, ledCard, trump)) { maxCard = card2; }
         
         Card card3 = ordered[3]->play_card(ledCard, trump);
-        cout << card1.get_rank() << " of " << card3.get_suit() << " played by " << ordered[3]->get_name() << endl;
-            if (Card_less(maxCard, card1, ledCard, trump)) { maxCard = card3; }
+        cout << card3.get_rank() << " of " << card3.get_suit() << " played by " << ordered[3]->get_name() << endl;
+            if (Card_less(maxCard, card3, ledCard, trump)) { maxCard = card3; }
         
         
         if (maxCard == ledCard) {
             cout << ordered[0]->get_name() << " takes the trick" << endl;
-            ++score[0];
+            ++handScore[0];
             shiftOrdered(ordered[0]);
             //newindex starts at player after player0
         }
         
         else if (maxCard == card1) {
             cout << ordered[1]->get_name() << " takes the trick" << endl;
-            ++score[1];
+            ++handScore[1];
             shiftOrdered(ordered[1]);
             
             //new index starts at player after player1
@@ -219,20 +222,30 @@ public:
         
         else if (maxCard == card2) {
             cout << ordered[2]->get_name() << " takes the trick" << endl;
-            ++score[0];
+            ++handScore[0];
             shiftOrdered(ordered[2]);
         }
         
         else {
             cout << ordered[3]->get_name() << " takes the trick" << endl;
-            ++score[1];
+            ++handScore[1];
             shiftOrdered(ordered[3]);
         }
         cout << endl;
         }
-        
-        
-        
+        score[0] += handScore[0];
+        score[1] += handScore[1];
+        if (handScore[0] > handScore[1]) {
+            cout << team[0] << " win the hand" << endl;
+        }
+        else {
+            cout << team[1] << " win the hand" << endl;
+        }
+        //EUCHRED AND MARCH
+        if (score[0] > score[1]) {
+            cout << team[0] << " have " << score[0] << " points" << endl;
+        }
+        //Taking all 5 tricks is called a march. If the winning team did not order up, they receive 2 points for taking 3, 4 or 5 tricks, which is called euchred.
     }
 
     void scoring();

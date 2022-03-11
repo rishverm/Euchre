@@ -135,6 +135,7 @@ Card Simple::lead_card(const std::string& trump) {
         if (!(hand[card].is_trump(trump))) {
             allCardsAreTrump = false;
             cardMax = hand[card];
+            iterator = card;
             break;
         }
     }
@@ -169,16 +170,27 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     Card cardMin = hand[0];
     int iterator = 0;
     bool hasLed = false;
+    bool hasTrump = false;
     
+    //check to see if has led
     for (unsigned int card = 0; card < hand.size(); card++) {
         if (hand[card].get_suit(trump) == led_card.get_suit(trump)) {
             hasLed = true;
             break;
         }
     }
-    if (hasLed) {
+    
+    //check to see if has trump
+    for (unsigned int card = 0; card < hand.size(); card++) {
+        if (hand[card].get_suit(trump) == trump) {
+            hasTrump = true;
+            break;
+        }
+    }
+    
+    if (hasLed && hasTrump) {
         for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(cardMax, hand[card], led_card.get_suit(trump))) {
+            if (Card_less(cardMax, hand[card], led_card.get_suit())) {
                 cardMax = hand[card];
                 iterator = card;
             }
@@ -186,9 +198,33 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
         hand.erase(hand.begin() + iterator);
         return cardMax;
     }
+    else if (hasLed) {
+        for (unsigned int card = 1; card < hand.size(); card++) {
+            if (Card_less(cardMax, hand[card], led_card, trump)) {
+                cardMax = hand[card];
+                iterator = card;
+            }
+        }
+        hand.erase(hand.begin() + iterator);
+        return cardMax;
+    }
+    /*
+    else if (hasTrump) {
+        for (unsigned int card = 1; card < hand.size(); card++) {
+            if (Card_less(cardMax, hand[card], trump)) {
+                cardMax = hand[card];
+                iterator = card;
+            }
+        }
+        hand.erase(hand.begin() + iterator);
+        return cardMax;
+    }
+     */
+    
     else {
         for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(hand[card], cardMin, trump)) {
+            //is this the right card_less function
+            if (Card_less(hand[card], cardMin, led_card, trump)) {
                 cardMin = hand[card];
                 iterator = card;
             }
