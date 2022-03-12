@@ -13,11 +13,13 @@ class Game {
 private:
     Player * players[4];
     Player * ordered[4];
+    Player * orderedUp;
     string shuffle;
 
     Pack pack;
     int score[2];
     int handScore[2];
+    int numTricks[2];
     string team[2];
     int hand;
 
@@ -38,6 +40,8 @@ public:
         score[1] = 0;
         handScore[0] = 0;
         handScore[1] = 0;
+        numTricks[0] = 0;
+        numTricks[1] = 0;
         hand = 0;
         team[0] = players[0]->get_name() + " and " + players[2]->get_name();
         team[1] = players[1]->get_name() + " and " + players[3]->get_name();
@@ -84,27 +88,6 @@ public:
                 deal_player(ordered[i], 3);
             }
         }
-        /*
-        
-        //dealer + 1 = 3 cards
-        deal_player(players[(dealer_index(hand) + 1) % 4], 3);
-        //dealer + 2 = 2 cards
-        deal_player(players[(dealer_index(hand) + 2) % 4], 2);
-        //dealer + 3 = 3 cards
-        deal_player(players[(dealer_index(hand) + 3) % 4], 3);
-        //dealer = 2 cards
-        deal_player(players[(dealer_index(hand) + 4) % 4], 2);
-        
-        //dealer + 1 = 2 cards
-        deal_player(players[(dealer_index(hand) + 1) % 4], 2);
-        //dealer + 2 = 3 cards
-        deal_player(players[(dealer_index(hand) + 2) % 4], 3);
-        //dealer + 3 = 2 cards
-        deal_player(players[(dealer_index(hand) + 3) % 4], 2);
-        //dealer = 3 cards
-        deal_player(players[(dealer_index(hand) + 4) % 4], 3);
-        */
-        
     }
     
     int dealer_index(int hand) {
@@ -128,7 +111,8 @@ public:
         cout << "Hand " << hand << endl;
         cout << players[dealer_index(hand)]->get_name() << " deals" << endl;
         Card upCard = pack.deal_one();
-        cout << upCard.get_rank() << " of " << upCard.get_suit() << " turned up" << endl;
+        cout << upCard.get_rank() << " of "
+             << upCard.get_suit() << " turned up" << endl;
         
         return upCard;
     }
@@ -150,6 +134,7 @@ public:
                 string upCardSuit = upCard.get_suit();
                 if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
                     trump = upCardSuit;
+                    orderedUp = ordered[i];
                     cout << player->get_name() << " orders up " << upCardSuit << endl;
                     cout << endl;
                     break;
@@ -171,7 +156,8 @@ public:
         return -1;
     }
     
-    //rewrites ordered s.t. the first index is the player who won the trick and shifts everyone else after in order
+    //rewrites ordered s.t. the first index is the player who won the trick
+    //and shifts everyone else after in order
     void shiftOrdered(Player *trickTaker) {
         getIndex(trickTaker);
         Player * tempArray[4];
@@ -189,32 +175,40 @@ public:
     void trickTaking(string trump) {
         for (int i = 0; i < 5; ++i) {
         Card ledCard = ordered[0]->lead_card(trump);
-        cout << ledCard.get_rank() << " of " << ledCard.get_suit() << " led by " << ordered[0]->get_name() << endl;
+            cout << ledCard.get_rank() << " of "
+            << ledCard.get_suit() << " led by "
+            << ordered[0]->get_name() << endl;
         Card maxCard = ledCard;
         
         Card card1 = ordered[1]->play_card(ledCard, trump);
-        cout << card1.get_rank() << " of " << card1.get_suit() << " played by " << ordered[1]->get_name() << endl;
-            if (Card_less(maxCard, card1, ledCard, trump)) { maxCard = card1; }
+        cout << card1.get_rank() << " of "
+             << card1.get_suit() << " played by "
+             << ordered[1]->get_name() << endl;
+        if (Card_less(maxCard, card1, ledCard, trump)) { maxCard = card1; }
         
         Card card2 = ordered[2]->play_card(ledCard, trump);
-        cout << card2.get_rank() << " of " << card2.get_suit() << " played by " << ordered[2]->get_name() << endl;
-            if (Card_less(maxCard, card2, ledCard, trump)) { maxCard = card2; }
+        cout << card2.get_rank() << " of "
+             << card2.get_suit() << " played by "
+             << ordered[2]->get_name() << endl;
+        if (Card_less(maxCard, card2, ledCard, trump)) { maxCard = card2; }
         
         Card card3 = ordered[3]->play_card(ledCard, trump);
-        cout << card3.get_rank() << " of " << card3.get_suit() << " played by " << ordered[3]->get_name() << endl;
-            if (Card_less(maxCard, card3, ledCard, trump)) { maxCard = card3; }
+        cout << card3.get_rank() << " of "
+             << card3.get_suit() << " played by "
+             << ordered[3]->get_name() << endl;
+        if (Card_less(maxCard, card3, ledCard, trump)) { maxCard = card3; }
         
         
         if (maxCard == ledCard) {
             cout << ordered[0]->get_name() << " takes the trick" << endl;
-            ++handScore[0];
+            ++numTricks[0];
             shiftOrdered(ordered[0]);
             //newindex starts at player after player0
         }
         
         else if (maxCard == card1) {
             cout << ordered[1]->get_name() << " takes the trick" << endl;
-            ++handScore[1];
+            ++numTricks[1];
             shiftOrdered(ordered[1]);
             
             //new index starts at player after player1
@@ -222,130 +216,134 @@ public:
         
         else if (maxCard == card2) {
             cout << ordered[2]->get_name() << " takes the trick" << endl;
-            ++handScore[0];
+            ++numTricks[0];
             shiftOrdered(ordered[2]);
         }
         
         else {
             cout << ordered[3]->get_name() << " takes the trick" << endl;
-            ++handScore[1];
+            ++numTricks[1];
             shiftOrdered(ordered[3]);
         }
         cout << endl;
         }
-        score[0] += handScore[0];
-        score[1] += handScore[1];
-        if (handScore[0] > handScore[1]) {
-            cout << team[0] << " win the hand" << endl;
+        
+    }
+    
+    int orderedUpTeamIndex() {
+        if (players[0] == orderedUp || players[2] == orderedUp) {
+            return 0;
         }
         else {
-            cout << team[1] << " win the hand" << endl;
+            return 1;
         }
-        //EUCHRED AND MARCH
-        if (score[0] > score[1]) {
-            cout << team[0] << " have " << score[0] << " points" << endl;
+    }
+    
+    
+
+    int scoring() {
+        int winningTeam = -1;
+        int losingTeam = -1;
+        if (numTricks[0] > numTricks[1]) {
+            winningTeam = 0;
+            losingTeam = 1;
         }
-        //Taking all 5 tricks is called a march. If the winning team did not order up, they receive 2 points for taking 3, 4 or 5 tricks, which is called euchred.
-    }
-
-    void scoring();
-
-    Player* getPlayer0() {
-        return players[0];
-    }
-
-    Player* getPlayer1() {
-        return players[1];
-    }
-
-    Player* getPlayer2() {
-        return players[2];
-    }
-
-    Player* getPlayer3() {
-        return players[3];
-    }
-
-    string getShuffle() {
-        return shuffle;
-    }
-
-
-    Pack getPack() {
-        return pack;
-    }
-
-    int* getScore() {
+        else {
+            winningTeam = 1;
+            losingTeam = 0;
+        }
+        cout << team[winningTeam] << " win the hand" << endl;
         
-        ++hand;
-        return score;
+        if (numTricks[winningTeam] == 5) {
+            cout << "march!" << endl;
+            handScore[winningTeam] = 2;
+            score[winningTeam] += handScore[winningTeam];
+        }
+        
+        if (winningTeam != orderedUpTeamIndex()) {
+            cout << "euchred!" << endl;
+            handScore[winningTeam] = 2;
+            score[winningTeam] += handScore[winningTeam];
+        }
+        
+        else {
+            handScore[winningTeam] = 1;
+            score[winningTeam] += handScore[winningTeam];
+        }
+        
+        cout << team[winningTeam] << " have " << score[winningTeam] << " points" << endl;
+        cout << team[losingTeam] << " have " << score[losingTeam] << " points" << endl;
+        
+        
+        return score[winningTeam];
+        
+        
     }
-
-    string* getTeam() {
-        return team;
+    
+    void printWinners() {
+        if (score[0] > score[1]) {
+            cout << team[0] << " win!" << endl;
+        }
+        else {
+            cout << team[1] << " win!" << endl;
+        }
+        delete players[0];
+        delete players[1];
+        delete players[2];
+        delete players[3];
     }
-
-
 
 };
 
-int main(int argc, char* argv[]) {
-    if (argc != 12) {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-            << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-            << "NAME4 TYPE4" << endl;
+void printError() {
+    cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
+         << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
+         << "NAME4 TYPE4" << endl;
+}
+
+int checkErrors(int argc, char *argv[]) {
+    if (argc != 12 || atoi(argv[3]) > 100 || atoi(argv[3]) < 1) {
         return 1;
     }
-    if (atoi(argv[3]) > 100 || atoi(argv[3]) < 1) {
-        cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-            << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-            << "NAME4 TYPE4" << endl;
-        return 1;
-    }
+    
     if (strcmp(argv[2], "shuffle") != 0) {
         if (strcmp(argv[2], "noshuffle") != 0) {
-            cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-                << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-                << "NAME4 TYPE4" << endl;
             return 1;
         }
     }
     if (strcmp(argv[5], "Human") != 0) {
         if (strcmp(argv[5], "Simple") != 0) {
-            cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-                << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-                << "NAME4 TYPE4" << endl;
             return 1;
         }
 
     }
     if (strcmp(argv[7], "Human") != 0) {
         if (strcmp(argv[7], "Simple") != 0) {
-            cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-                << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-                << "NAME4 TYPE4" << endl;
             return 1;
         }
 
     }
     if (strcmp(argv[9], "Human") != 0) {
         if (strcmp(argv[9], "Simple") != 0) {
-            cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-                << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-                << "NAME4 TYPE4" << endl;
             return 1;
         }
 
     }
     if (strcmp(argv[11], "Human") != 0) {
         if (strcmp(argv[11], "Simple") != 0) {
-            cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
-                << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
-                << "NAME4 TYPE4" << endl;
             return 1;
         }
-
     }
+    return 0;
+}
+ 
+int main(int argc, char* argv[]) {
+    int error = checkErrors(argc, argv);
+    if (error == 1) {
+        printError();
+    }
+    int maxScore = 0;
+    
     ifstream file;
     file.open(argv[1]);
     if (!file.is_open()) {
@@ -361,27 +359,18 @@ int main(int argc, char* argv[]) {
         }
     }
     
-    
-    
     Game x = Game(&argc, argv);
+    
+    while (maxScore < atoi(argv[3])) {
     Card upCard = x.setUpTable();
     string trump = x.makingTrump(upCard);
     x.trickTaking(trump);
+    maxScore = x.scoring();
+    }
+    cout << endl;
+    x.printWinners();
     
     
     
     //delete all the players!!!!!!
-
 }
-
-
-/*
-    Game* x = new Game(&argc, argv);
-    if (x->getShuffle() == "shuffle") {
-        x->getPack()->shuffle();
-    }
-
-    x->getPlayer1()->
-*/
-
-
