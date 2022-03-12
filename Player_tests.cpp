@@ -1744,11 +1744,11 @@ TEST(test_player_play_card_edgecase_5_4) {
     // Bob plays a card
     Card jack_diamonds(Card::RANK_JACK, Card::SUIT_DIAMONDS);
     Card card_played = bob->play_card(
-    jack_diamonds,  // two of diamonds is led
+    jack_diamonds,  // jack of diamonds is led
     "Hearts"    // Trump suit
     );
 
-    ASSERT_EQUAL(card_played, Card(Card::RANK_ACE, Card::SUIT_HEARTS));
+    ASSERT_EQUAL(card_played, Card(Card::RANK_QUEEN, Card::SUIT_DIAMONDS));
     
 //lead card is left bower
 

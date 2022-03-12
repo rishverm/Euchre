@@ -14,6 +14,7 @@ private:
     Player * players[4];
     Player * ordered[4];
     Player * orderedUp;
+    string strategies[4];
     string shuffle;
 
     Pack pack;
@@ -30,6 +31,14 @@ public:
             players[ind] = Player_factory(argv[i], (argv[i + 1]));
             ++ind;
         }
+        
+        ind = 0;
+        for (int i = 4; i < *argc; i += 2) {
+            strategies[ind] = argv[i];
+            ++ind;
+        }
+        
+        
         shuffle = argv[2];
 
         ifstream fin;
@@ -53,7 +62,13 @@ public:
     }
 
     void deal_player(Player* player, int number) {
+        //need to reorder pack from next
+        
+        
         for (int i = 0; i < number; i++) {
+            if (pack.empty()) {
+                pack.reset();
+            }
             player->add_card(pack.deal_one());
         }
     }
@@ -100,7 +115,7 @@ public:
     
     
 
-    Card setUpTable() {
+    Card setUpTable(int hand) {
         if (shuffle == "shuffle") {
             pack.shuffle();
         }
@@ -132,19 +147,36 @@ public:
             for (int i = 0; i < 4; ++i) {
                 Player *player = ordered[i];
                 string upCardSuit = upCard.get_suit();
-                if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
-                    trump = upCardSuit;
-                    orderedUp = ordered[i];
-                    cout << player->get_name() << " orders up " << upCardSuit << endl;
-                    cout << endl;
-                    break;
+                if (strategies[i] == "Simple") {
+                    if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
+                        trump = upCardSuit;
+                        orderedUp = ordered[i];
+                        cout << player->get_name() << " orders up " << upCardSuit << endl;
+                        cout << endl;
+                        break;
+                    }
+                    else {
+                        cout << player->get_name() << " passes" << endl;
+                    }
                 }
                 else {
-                    cout << player->get_name() << " passes" << endl;
+                    if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
+                        cin >> trump;
+                        if (trump != "pass") {
+                            cout << player->get_name() << " orders up " << trump << endl;
+                            cout << endl;
+                            return trump;
+                        }
+                    }
+                    
+                    else {
+                        cout << player->get_name() << " passes" << endl;
+                    }
                 }
             }
         }
         return trump;
+        
     }
     
     int getIndex(Player *player) {
@@ -292,6 +324,11 @@ public:
         delete players[2];
         delete players[3];
     }
+    
+    int getHand() {
+        ++hand;
+        return hand;
+    }
 
 };
 
@@ -342,7 +379,7 @@ int main(int argc, char* argv[]) {
     if (error == 1) {
         printError();
     }
-    int maxScore = 0;
+    
     
     ifstream file;
     file.open(argv[1]);
@@ -358,18 +395,22 @@ int main(int argc, char* argv[]) {
             cout << argv[i] << " ";
         }
     }
-    
+    int score = 0;
+    int hand = 0;
     Game x = Game(&argc, argv);
     
-    while (maxScore < atoi(argv[3])) {
-    Card upCard = x.setUpTable();
+    while (score < atoi(argv[3])) {
+    Card upCard = x.setUpTable(hand);
     string trump = x.makingTrump(upCard);
     x.trickTaking(trump);
-    maxScore = x.scoring();
-    }
+    score = x.scoring();
+    hand = x.getHand();
     cout << endl;
-    x.printWinners();
     
+    }
+    
+    
+    x.printWinners();
     
     
     //delete all the players!!!!!!
