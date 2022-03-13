@@ -170,7 +170,7 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     Card cardMax = hand[0];
     Card cardMin = hand[0];
     int iterator = 0;
-    bool isALedCard[hand.size()];
+    
     bool hasLed = false;
     bool hasTrump = false;
     string ledCardSuit = led_card.get_suit(trump);
@@ -181,12 +181,13 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     for (unsigned int card = 0; card < hand.size(); card++) {
         string cardSuit = hand[card].get_suit(trump);
         if (cardSuit == ledCardSuit) {
-            isALedCard[card] = true;
+            
             cardMax = hand[card];
             iterator = card;
             hasLed = true;
+            break;
         }
-        isALedCard[card] = false;
+        
     }
     
     //check to see if has trump
@@ -199,15 +200,22 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     
     if (hasLed) {
         for (unsigned int card = 0; card < hand.size(); card++) {
-            if ((isALedCard[card] == true) &&
-                (Card_less(cardMax, hand[card], led_card, trump))) {
+            if (cardMax.get_suit() == ledCardSuit) {
+                if (Card_less(cardMax, hand[card], led_card, trump) && hand[card].get_suit() == ledCardSuit) {
                 cardMax = hand[card];
                 iterator = card;
             }
+            }
+            else {
+                    cardMax = hand[card];
+                    iterator = card;
+            }
         }
+        
         hand.erase(hand.begin() + iterator);
         return cardMax;
     }
+    
     
     //else if player doesn't have led
     else {
