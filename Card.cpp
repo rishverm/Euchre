@@ -385,7 +385,23 @@ bool Card_less(const Card& a, const Card& b, const Card& led_card,
 	const std::string& trump) {
     string ledSuit = led_card.get_suit();
     
-    if (a.get_suit(trump) == trump || b.get_suit(trump) == trump) {
+    if ((a.get_suit() == ledSuit) || (b.get_suit() == ledSuit)) {
+    if (a.get_suit() == ledSuit && b.get_suit() != ledSuit) {
+        return false;
+        //a is not less than b
+    }
+    else if (b.get_suit() == ledSuit && a.get_suit() != ledSuit) {
+        return true;
+        //a is less than b
+    }
+    else if (b.get_suit() == ledSuit && a.get_suit() == ledSuit) {
+        return Card_less(a, b, trump);
+
+    }
+    }
+
+
+    else if (a.get_suit(trump) == trump || b.get_suit(trump) == trump) {
         return Card_less(a, b, trump);
             
     }
@@ -414,26 +430,7 @@ bool Card_less(const Card& a, const Card& b, const Card& led_card,
     //a is is led, b is not led or trump
     
     
-    else if ((a.get_suit() == ledSuit) || (b.get_suit() == ledSuit)) {
-        if (a.get_suit() == ledSuit && b.get_suit() != ledSuit) {
-            return false;
-            //a is not less than b
-        }
-        else if (b.get_suit() == ledSuit && a.get_suit() != ledSuit) {
-            return true;
-            //a is less than b
-        }
-        else if (b.get_suit() == ledSuit && a.get_suit() == ledSuit) {
-            bool lessThan = operator<(a, b);
-            if (lessThan) {
-                return true;
-            }
-            else {
-                return false;
-            }
-
-        }
-    }
+    
 
     //neither a nor b trump
     bool lessThan = operator<(a, b);

@@ -170,9 +170,8 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     Card cardMax = hand[0];
     Card cardMin = hand[0];
     int iterator = 0;
-    bool isALedCard[hand.size()];
     bool hasLed = false;
-    bool hasTrump = false;
+   
     string ledCardSuit = led_card.get_suit(trump);
     //if a Simple Player can follow suit, they play the highest card
     //that follows suit. Otherwise, they play the lowest card in their hand.
@@ -181,26 +180,19 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     for (unsigned int card = 0; card < hand.size(); card++) {
         string cardSuit = hand[card].get_suit(trump);
         if (cardSuit == ledCardSuit) {
-            isALedCard[card] = true;
             cardMax = hand[card];
             iterator = card;
             hasLed = true;
-        }
-        isALedCard[card] = false;
-    }
-    
-    //check to see if has trump
-    for (unsigned int card = 0; card < hand.size(); card++) {
-        if (hand[card].get_suit(trump) == trump) {
-            hasTrump = true;
             break;
         }
     }
     
+    //check to see if has trump
+    
+    
     if (hasLed) {
         for (unsigned int card = 0; card < hand.size(); card++) {
-            if ((isALedCard[card] == true) &&
-                (Card_less(cardMax, hand[card], led_card, trump))) {
+            if (Card_less(cardMax, hand[card], led_card, trump)) {
                 cardMax = hand[card];
                 iterator = card;
             }
