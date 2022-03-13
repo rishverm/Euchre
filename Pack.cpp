@@ -54,7 +54,7 @@ void Pack::reset() {
 }
 
 void Pack::shuffle() {
-
+    reset();
     for (int j = 0; j < 7; ++j) {
         //create array for first half
         //create array for 2nd half
@@ -85,9 +85,6 @@ void Pack::shuffle() {
             ++counter;
         }
     }
-    reset();
-
-
     return;
 }
 

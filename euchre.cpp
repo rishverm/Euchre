@@ -120,6 +120,9 @@ public:
         if (shuffle == "shuffle") {
             pack.shuffle();
         }
+        else {
+            pack.reset();
+        }
 
         deal(players[dealer_index(hand)]);
         //WE MIGHT NEED TO ITERATE HAND HERE
@@ -254,6 +257,39 @@ public:
 
 
     }
+    bool Card_less_Two(const Card& a, const Card& b, const Card& led_card,
+        const std::string& trump) {
+        string ledSuit = led_card.get_suit();
+        if (a.get_suit(trump) == trump || b.get_suit(trump) == trump) {
+            return Card_less(a, b, trump);
+
+        }
+        if ((a.get_suit(trump) == ledSuit) || (b.get_suit(trump) == ledSuit)) {
+            if (a.get_suit(trump) == ledSuit && b.get_suit(trump) != ledSuit) {
+                return false;
+                //a is not less than b
+            }
+            else if (b.get_suit(trump) == ledSuit && a.get_suit(trump) != ledSuit) {
+                return true;
+                //a is less than b
+            }
+            else if (b.get_suit(trump) == ledSuit && a.get_suit(trump) == ledSuit) {
+                return Card_less(a, b, trump);
+
+            }
+        }
+        
+
+        bool lessThan = operator<(a, b);
+        if (lessThan) {
+            return true;
+        }
+
+        else {
+            return false;
+        }
+
+    }
 
     void trickTaking(string trump) {
         for (int i = 0; i < 5; ++i) {
@@ -267,19 +303,19 @@ public:
             cout << card1.get_rank() << " of "
                 << card1.get_suit() << " played by "
                 << ordered[1]->get_name() << endl;
-            if (Card_less(maxCard, card1, ledCard, trump)) { maxCard = card1; }
+            if (Card_less_Two(maxCard, card1, ledCard, trump)) { maxCard = card1; }
 
             Card card2 = ordered[2]->play_card(ledCard, trump);
             cout << card2.get_rank() << " of "
                 << card2.get_suit() << " played by "
                 << ordered[2]->get_name() << endl;
-            if (Card_less(maxCard, card2, ledCard, trump)) { maxCard = card2; }
+            if (Card_less_Two(maxCard, card2, ledCard, trump)) { maxCard = card2; }
 
             Card card3 = ordered[3]->play_card(ledCard, trump);
             cout << card3.get_rank() << " of "
                 << card3.get_suit() << " played by "
                 << ordered[3]->get_name() << endl;
-            if (Card_less(maxCard, card3, ledCard, trump)) { maxCard = card3; }
+            if (Card_less_Two(maxCard, card3, ledCard, trump)) { maxCard = card3; }
 
 
             if (maxCard == ledCard) {
