@@ -21,54 +21,54 @@ class Simple : public Player {
 private:
     std::string name;
     std::vector<Card> hand;
-    
+
 public:
     Simple();
-    
-    Simple(const std::string &name_in);
-    
-    virtual const std::string & get_name() const;
-    
-    virtual void add_card(const Card &c);
-    
-    virtual bool make_trump(const Card &upcard, bool is_dealer,
-                            int round, std::string &order_up_suit) const;
-    
+
+    Simple(const std::string& name_in);
+
+    virtual const std::string& get_name() const;
+
+    virtual void add_card(const Card& c);
+
+    virtual bool make_trump(const Card& upcard, bool is_dealer,
+        int round, std::string& order_up_suit) const;
+
     virtual void add_and_discard(const Card& upcard);
-    
+
     virtual Card lead_card(const std::string& trump);
-    
+
     virtual Card play_card(const Card& led_card, const std::string& trump);
-    
+
 };
 
 Simple::Simple() {
 
 }
 
-Simple::Simple(const std::string &name_in) {
+Simple::Simple(const std::string& name_in) {
     name = name_in;
 }
 
-const std::string & Simple::get_name() const {
+const std::string& Simple::get_name() const {
     return name;
 }
 
-void Simple::add_card(const Card &c) {
-    
+void Simple::add_card(const Card& c) {
+
     hand.push_back(c);
-    
+
 }
 
-bool Simple::make_trump(const Card &upcard, bool is_dealer,
-                int round, std::string &order_up_suit) const {
+bool Simple::make_trump(const Card& upcard, bool is_dealer,
+    int round, std::string& order_up_suit) const {
     int numFaceCardsUpCard = 0;
     if (round == 1) {
-        for (unsigned int i = 0; i < hand.size(); ++ i) {
+        for (unsigned int i = 0; i < hand.size(); ++i) {
             if (hand[i].is_face() && hand[i].is_trump(upcard.get_suit())) {
                 ++numFaceCardsUpCard;
             }
-            
+
         }
         if (numFaceCardsUpCard >= 2) {
             order_up_suit = upcard.get_suit();
@@ -78,9 +78,9 @@ bool Simple::make_trump(const Card &upcard, bool is_dealer,
             return false;
         }
     }
-    
+
     else if (round == 2 && !is_dealer) {
-        for (unsigned int i = 0; i < hand.size(); ++ i) {
+        for (unsigned int i = 0; i < hand.size(); ++i) {
             if (hand[i].is_face() && hand[i].is_trump(Suit_next(upcard.get_suit()))) {
                 ++numFaceCardsUpCard;
             }
@@ -93,13 +93,13 @@ bool Simple::make_trump(const Card &upcard, bool is_dealer,
             return false;
         }
     }
-    
+
     //if round == 2 && is_dealer
     else {
         order_up_suit = Suit_next(upcard.get_suit());
         return true;
     }
-    
+
     //in round two, look at same color suite: only need one face card of same color suite
 }
 
@@ -107,23 +107,23 @@ void Simple::add_and_discard(const Card& upcard) {
     add_card(upcard);
     Card min = hand[0];
     string trump = upcard.get_suit();
-    std::vector <Card>:: iterator handLoop;
+    std::vector <Card>::iterator handLoop;
     handLoop = hand.begin();
     int minIndex = 0;
     int iter = 0;
-    
-    
-    
+
+
+
     for (handLoop = hand.begin() + 1; handLoop != hand.end(); ++handLoop) {
         iter++;
         if (Card_less(hand[iter], min, trump)) {
             min = hand[iter];
             minIndex = iter;
         }
-        
+
     }
     Card discardedCard = hand[minIndex];
-    hand.erase(hand.begin()+minIndex);
+    hand.erase(hand.begin() + minIndex);
 }
 
 
@@ -132,7 +132,7 @@ Card Simple::lead_card(const std::string& trump) {
     int iterator = 0;
     bool allCardsAreTrump = true;
     for (unsigned int card = 0; card < hand.size(); card++) {
-        
+
         if (!(hand[card].is_trump(trump))) {
             allCardsAreTrump = false;
             cardMax = hand[card];
@@ -140,7 +140,7 @@ Card Simple::lead_card(const std::string& trump) {
             break;
         }
     }
-    
+
     if (!allCardsAreTrump) {
         for (unsigned int card = 0; card < hand.size(); card++) {
             if (Card_less(cardMax, hand[card], trump) && !(hand[card].is_trump(trump))) {
@@ -149,7 +149,7 @@ Card Simple::lead_card(const std::string& trump) {
             }
         }
     }
-    
+
     //allCardsAreTrump
     else {
         for (unsigned int card = 1; card < hand.size(); card++) {
@@ -160,9 +160,9 @@ Card Simple::lead_card(const std::string& trump) {
         }
     }
 
-    hand.erase(hand.begin()+iterator);
+    hand.erase(hand.begin() + iterator);
     return cardMax;
-   
+
 
 }
 
@@ -170,82 +170,58 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     Card cardMax = hand[0];
     Card cardMin = hand[0];
     int iterator = 0;
-<<<<<<< HEAD
-=======
-    
->>>>>>> a5ab3744bf0e7fb3bb83570f62760914cdd2d357
     bool hasLed = false;
-   
+
     string ledCardSuit = led_card.get_suit(trump);
     //if a Simple Player can follow suit, they play the highest card
     //that follows suit. Otherwise, they play the lowest card in their hand.
-    
+
     //check to see if has led
     for (unsigned int card = 0; card < hand.size(); card++) {
         string cardSuit = hand[card].get_suit(trump);
         if (cardSuit == ledCardSuit) {
-<<<<<<< HEAD
-=======
-            
->>>>>>> a5ab3744bf0e7fb3bb83570f62760914cdd2d357
             cardMax = hand[card];
             iterator = card;
             hasLed = true;
             break;
         }
-<<<<<<< HEAD
-=======
-        
->>>>>>> a5ab3744bf0e7fb3bb83570f62760914cdd2d357
     }
-    
+
     //check to see if has trump
-    
-    
+
+
     if (hasLed) {
         for (unsigned int card = 0; card < hand.size(); card++) {
-<<<<<<< HEAD
             if (Card_less(cardMax, hand[card], led_card, trump)) {
-=======
-            if (cardMax.get_suit() == ledCardSuit) {
-                if (Card_less(cardMax, hand[card], led_card, trump) && hand[card].get_suit() == ledCardSuit) {
->>>>>>> a5ab3744bf0e7fb3bb83570f62760914cdd2d357
                 cardMax = hand[card];
                 iterator = card;
             }
-            }
-            else {
-                    cardMax = hand[card];
-                    iterator = card;
-            }
         }
-        
         hand.erase(hand.begin() + iterator);
         return cardMax;
     }
-    
-    
+
     //else if player doesn't have led
     else {
         //int card = 0;
-            for (unsigned int card = 1; card < hand.size(); card++) {
-                if (Card_less(hand[card], cardMin, trump)) {
-                    cardMin = hand[card];
-                    iterator = card;
-                }
+        for (unsigned int card = 1; card < hand.size(); card++) {
+            if (Card_less(hand[card], cardMin, trump)) {
+                cardMin = hand[card];
+                iterator = card;
             }
+        }
         hand.erase(hand.begin() + iterator);
         return cardMin;
-    
+
     }
-    
-    
-    
-    
+
+
+
+
     /*
-    
-    
-    
+
+
+
     if (hasLed && hasTrump) {
         for (unsigned int card = 1; card < hand.size(); card++) {
             if (Card_less(cardMax, hand[card], ledCardSuit)) {
@@ -266,7 +242,7 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
         hand.erase(hand.begin() + iterator);
         return cardMax;
     }
-    
+
     else if (hasTrump) {
         for (unsigned int card = 1; card < hand.size(); card++) {
             if (Card_less(cardMax, hand[card], trump)) {
@@ -277,8 +253,8 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
         hand.erase(hand.begin() + iterator);
         return cardMax;
     }
-     
-    
+
+
     else {
         for (unsigned int card = 1; card < hand.size(); card++) {
             //is this the right card_less function
@@ -290,7 +266,7 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
         hand.erase(hand.begin() + iterator);
         return cardMin;
     }
-    
+
 */
 }
 
@@ -298,25 +274,25 @@ class Human : public Player {
 private:
     std::string name;
     std::vector<Card> hand;
-    
+
 public:
     Human();
-    
-    Human(const std::string &name_in);
-    
-    virtual const std::string & get_name() const;
-    
-    virtual void add_card(const Card &c);
-    
-    virtual bool make_trump(const Card &upcard, bool is_dealer,
-                            int round, std::string &order_up_suit) const;
-    
-    virtual void add_and_discard(const Card &upcard);
-    
-    virtual Card lead_card(const std::string &trump);
-    
-    virtual Card play_card(const Card &led_card, const std::string &trump);
-    
+
+    Human(const std::string& name_in);
+
+    virtual const std::string& get_name() const;
+
+    virtual void add_card(const Card& c);
+
+    virtual bool make_trump(const Card& upcard, bool is_dealer,
+        int round, std::string& order_up_suit) const;
+
+    virtual void add_and_discard(const Card& upcard);
+
+    virtual Card lead_card(const std::string& trump);
+
+    virtual Card play_card(const Card& led_card, const std::string& trump);
+
 };
 
 
@@ -324,29 +300,29 @@ public:
 Human::Human() {
 }
 
-Human::Human(const std::string &name_in) {
+Human::Human(const std::string& name_in) {
     name = name_in;
 }
 
-const std::string & Human::get_name() const{
+const std::string& Human::get_name() const {
     return name;
 }
 
-void Human::add_card(const Card &c) {
+void Human::add_card(const Card& c) {
     //sort(hand.begin(), hand.end());
     hand.push_back(c);
     sort(hand.begin(), hand.end());
     return;
 }
 
-bool Human::make_trump(const Card &upcard, bool is_dealer,
-                int round, std::string &order_up_suit) const {
-    
+bool Human::make_trump(const Card& upcard, bool is_dealer,
+    int round, std::string& order_up_suit) const {
+
     string suit;
     for (unsigned int card = 0; card < hand.size(); card++) {
         cout << "Human player " << get_name()
-        << "'s hand: [" << card << "] "
-        << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+            << "'s hand: [" << card << "] "
+            << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
     }
     cout << "Human player " << get_name() << ", please enter a suit or \"pass\":" << endl;
     if (suit == "pass") {
@@ -358,7 +334,7 @@ bool Human::make_trump(const Card &upcard, bool is_dealer,
     }
 }
 
-void Human::add_and_discard(const Card &upcard) {
+void Human::add_and_discard(const Card& upcard) {
     sort(hand.begin(), hand.end());
     int cardDiscardNum;
     for (unsigned int card = 0; card < hand.size(); card++) {
@@ -375,7 +351,7 @@ void Human::add_and_discard(const Card &upcard) {
     }
 }
 
-Card Human::lead_card(const std::string &trump) {
+Card Human::lead_card(const std::string& trump) {
     sort(hand.begin(), hand.end());
     int cardLeadNum;
     for (unsigned int card = 0; card < hand.size(); card++) {
@@ -390,7 +366,7 @@ Card Human::lead_card(const std::string &trump) {
     return lead;
 }
 
-Card Human::play_card(const Card &led_card, const std::string &trump) {
+Card Human::play_card(const Card& led_card, const std::string& trump) {
     sort(hand.begin(), hand.end());
     int cardPlayNum;
     for (unsigned int card = 0; card < hand.size(); card++) {
@@ -408,31 +384,32 @@ Card Human::play_card(const Card &led_card, const std::string &trump) {
 
 
 
-Player * Player_factory(const std::string &name, const std::string &strategy) {
+Player* Player_factory(const std::string& name, const std::string& strategy) {
     // We need to check the value of strategy and return
       // the corresponding player type.
     if (strategy == "Simple") {
-        Simple *bot = new Simple(name);
+        Simple* bot = new Simple(name);
         return bot;
-        
+
     }
     else if (strategy == "Human") {
         Human* person = new Human(name);
         return person;
-        
+
     }
     else {
-      // Invalid strategy if we get here
-        
-      assert(false);
-      return nullptr;
+        // Invalid strategy if we get here
+
+        assert(false);
+        return nullptr;
     }
-      
-    
+
+
 }
 
-std::ostream & operator<<(std::ostream &os, const Player &p) {
+std::ostream& operator<<(std::ostream& os, const Player& p) {
     os << p.get_name();
-   return os;
+    return os;
 }
+
 

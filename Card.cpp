@@ -42,12 +42,12 @@ Card::Card() :rank(RANK_TWO), suit(SUIT_SPADES) {
 
 
 string Card::get_rank() const {
-	return rank;
+    return rank;
 }
 
 
 string Card::get_suit() const {
-	return suit;
+    return suit;
 }
 /*if ((trump == SUIT_DIAMONDS) && (suit == SUIT_HEARTS) && (rank == RANK_JACK)) {
     return SUIT_DIAMONDS;
@@ -121,7 +121,7 @@ bool operator<(const Card& lhs, const Card& rhs) {
     int lhsValue = 0;
     int rhsValue = 0;
     if (lhs.get_rank() != rhs.get_rank()) {
-    
+
         for (int i = 0; i < NUM_RANKS; ++i) {
             if (RANK_NAMES_BY_WEIGHT[i] == lhs.get_rank()) {
                 lhsValue = i;
@@ -137,7 +137,7 @@ bool operator<(const Card& lhs, const Card& rhs) {
             return false;
         }
     }
-    
+
     else {
         for (int i = 0; i < NUM_SUITS; ++i) {
             if (SUIT_NAMES_BY_WEIGHT[i] == lhs.get_suit()) {
@@ -154,14 +154,14 @@ bool operator<(const Card& lhs, const Card& rhs) {
             return false;
         }
     }
-    
+
 }
 
 bool operator<=(const Card& lhs, const Card& rhs) {
     int lhsValue = 0;
     int rhsValue = 0;
     if (lhs.get_rank() != rhs.get_rank()) {
-    
+
         for (int i = 0; i < NUM_RANKS; ++i) {
             if (RANK_NAMES_BY_WEIGHT[i] == lhs.get_rank()) {
                 lhsValue = i;
@@ -177,7 +177,7 @@ bool operator<=(const Card& lhs, const Card& rhs) {
             return false;
         }
     }
-    
+
     else {
         for (int i = 0; i < NUM_SUITS; ++i) {
             if (SUIT_NAMES_BY_WEIGHT[i] == lhs.get_suit()) {
@@ -194,8 +194,8 @@ bool operator<=(const Card& lhs, const Card& rhs) {
             return false;
         }
     }
-    
-	return 0;
+
+    return 0;
 
 }
 
@@ -203,7 +203,7 @@ bool operator>(const Card& lhs, const Card& rhs) {
     int lhsValue = 0;
     int rhsValue = 0;
     if (lhs.get_rank() != rhs.get_rank()) {
-    
+
         for (int i = 0; i < NUM_RANKS; ++i) {
             if (RANK_NAMES_BY_WEIGHT[i] == lhs.get_rank()) {
                 lhsValue = i;
@@ -219,7 +219,7 @@ bool operator>(const Card& lhs, const Card& rhs) {
             return false;
         }
     }
-    
+
     else {
         for (int i = 0; i < NUM_SUITS; ++i) {
             if (SUIT_NAMES_BY_WEIGHT[i] == lhs.get_suit()) {
@@ -243,7 +243,7 @@ bool operator>=(const Card& lhs, const Card& rhs) {
     int lhsValue = 0;
     int rhsValue = 0;
     if (lhs.get_rank() != rhs.get_rank()) {
-    
+
         for (int i = 0; i < NUM_RANKS; ++i) {
             if (RANK_NAMES_BY_WEIGHT[i] == lhs.get_rank()) {
                 lhsValue = i;
@@ -259,7 +259,7 @@ bool operator>=(const Card& lhs, const Card& rhs) {
             return false;
         }
     }
-    
+
     else {
         for (int i = 0; i < NUM_SUITS; ++i) {
             if (SUIT_NAMES_BY_WEIGHT[i] == lhs.get_suit()) {
@@ -312,15 +312,15 @@ string Suit_next(const string& suit) {
     else {
         return Card::SUIT_CLUBS;
     }
-	
+
 }
 
 ostream& operator<<(ostream& os, const Card& card) {
     string rank = card.get_rank();
     string suit = card.get_suit();
     os << rank << " of " << suit;
-	return os;
-    
+    return os;
+
 }
 
 bool Card_less(const Card& a, const Card& b, const std::string& trump) {
@@ -330,23 +330,23 @@ bool Card_less(const Card& a, const Card& b, const std::string& trump) {
     //neither trump, same suit: compare ranks
     //neither trump, different suit, different rank: compare ranks
     //neither trump, different suits, same rank: compare suit weight
-    
+
     if (a.is_right_bower(trump)) {
         return false;
     }
-    
+
     if (b.is_right_bower(trump)) {
         return true;
     }
-    
+
     if (a.is_left_bower(trump)) {
         return false;
     }
-    
+
     if (b.is_left_bower(trump)) {
         return true;
     }
-    
+
     //a or b or both are trump
     if (a.get_suit() == trump || b.get_suit() == trump) {
         if (a.get_suit(trump) == trump && b.get_suit(trump) != trump) {
@@ -374,7 +374,7 @@ bool Card_less(const Card& a, const Card& b, const std::string& trump) {
     if (lessThan) {
         return true;
     }
-    
+
     else {
         return false;
     }
@@ -382,66 +382,66 @@ bool Card_less(const Card& a, const Card& b, const std::string& trump) {
 
 //trump suit > led suit > non-trump && non-led suit
 bool Card_less(const Card& a, const Card& b, const Card& led_card,
-	const std::string& trump) {
+    const std::string& trump) {
     string ledSuit = led_card.get_suit();
-    
-    if ((a.get_suit() == ledSuit) || (b.get_suit() == ledSuit)) {
-    if (a.get_suit() == ledSuit && b.get_suit() != ledSuit) {
-        return false;
-        //a is not less than b
-    }
-    else if (b.get_suit() == ledSuit && a.get_suit() != ledSuit) {
-        return true;
-        //a is less than b
-    }
-    else if (b.get_suit() == ledSuit && a.get_suit() == ledSuit) {
-        return Card_less(a, b, trump);
 
-    }
+    if ((a.get_suit() == ledSuit) || (b.get_suit() == ledSuit)) {
+        if (a.get_suit() == ledSuit && b.get_suit() != ledSuit) {
+            return false;
+            //a is not less than b
+        }
+        else if (b.get_suit() == ledSuit && a.get_suit() != ledSuit) {
+            return true;
+            //a is less than b
+        }
+        else if (b.get_suit() == ledSuit && a.get_suit() == ledSuit) {
+            return Card_less(a, b, trump);
+
+        }
     }
 
 
     else if (a.get_suit(trump) == trump || b.get_suit(trump) == trump) {
         return Card_less(a, b, trump);
-            
+
     }
-        /*
-        if (a.get_suit() == trump && b.get_suit() != trump) {
-            return false;
-            //a is not less than b
-        }
-        else if (b.get_suit() == trump && a.get_suit() != trump) {
+    /*
+    if (a.get_suit() == trump && b.get_suit() != trump) {
+        return false;
+        //a is not less than b
+    }
+    else if (b.get_suit() == trump && a.get_suit() != trump) {
+        return true;
+        //a is less than b
+    }
+    else if (b.get_suit() == trump && a.get_suit() == trump) {
+        bool lessThan = operator<(a, b);
+        if (lessThan) {
             return true;
-            //a is less than b
         }
-        else if (b.get_suit() == trump && a.get_suit() == trump) {
-            bool lessThan = operator<(a, b);
-            if (lessThan) {
-                return true;
-            }
-            else {
-                return false;
-            }
+        else {
+            return false;
+        }
 
-        }
     }
-     */
-    //a is led, b is led
-    //a is is led, b is not led or trump
-    
-    
-    
+}
+ */
+ //a is led, b is led
+ //a is is led, b is not led or trump
 
-    //neither a nor b trump
+
+
+
+ //neither a nor b trump
     bool lessThan = operator<(a, b);
     if (lessThan) {
         return true;
     }
-    
+
     else {
         return false;
     }
-    
+
 }
 
 
