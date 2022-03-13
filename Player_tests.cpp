@@ -1748,7 +1748,7 @@ TEST(test_player_play_card_edgecase_5_4) {
     "Hearts"    // Trump suit
     );
 
-    ASSERT_EQUAL(card_played, Card(Card::RANK_QUEEN, Card::SUIT_DIAMONDS));
+    ASSERT_EQUAL(card_played, Card(Card::RANK_ACE, Card::SUIT_HEARTS));
     
 //lead card is left bower
 

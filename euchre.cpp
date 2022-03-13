@@ -34,7 +34,7 @@ public:
         
         ind = 0;
         for (int i = 4; i < *argc; i += 2) {
-            strategies[ind] = argv[i];
+            strategies[ind] = argv[i + 1];
             ++ind;
         }
         
@@ -103,6 +103,7 @@ public:
                 deal_player(ordered[i], 3);
             }
         }
+        
     }
     
     int dealer_index(int hand) {
@@ -140,14 +141,54 @@ public:
             return false;
         }
     }
+    
+    string simpleMakeTrump(Card upCard, Player *player, int j) {
+        string upCardSuit = upCard.get_suit();
+        if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
+            orderedUp = player;
+            cout << player->get_name() << " orders up " << upCardSuit << endl;
+            cout << endl;
+            return upCardSuit;
+        }
+        else {
+            cout << player->get_name() << " passes" << endl;
+            return "";
+        }
+    }
+    
+    string humanMakeTrump(Card upCard, Player *player, int j) {
+        string upCardSuit = upCard.get_suit();
+        if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
+            cin >> upCardSuit;
+            if (upCardSuit != "pass") {
+                cout << player->get_name() << " orders up " << upCardSuit << endl;
+                cout << endl;
+                return upCardSuit;
+            }
+            else {
+                cout << player->get_name() << " passes" << endl;
+                return "";
+            }
+        }
+        
+        
+        return "";
+    }
 
     string makingTrump(Card upCard) {
         string trump = "";
         for (int j = 1; j <= 2; ++j) {
             for (int i = 0; i < 4; ++i) {
-                Player *player = ordered[i];
+                //Player *player = ordered[i];
                 string upCardSuit = upCard.get_suit();
                 if (strategies[i] == "Simple") {
+                    
+                    while (trump == "" && i < 4) {
+                     trump = simpleMakeTrump(upCard, ordered[i], j);
+                        ++i;
+                    }
+                    
+                    /*
                     if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
                         trump = upCardSuit;
                         orderedUp = ordered[i];
@@ -158,8 +199,17 @@ public:
                     else {
                         cout << player->get_name() << " passes" << endl;
                     }
+                     */
+               
                 }
                 else {
+                    
+                    while (trump == "" && i < 4) {
+                     trump = humanMakeTrump(upCard, ordered[i], j);
+                        ++i;
+                    }
+                    /*
+                    
                     if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
                         cin >> trump;
                         if (trump != "pass") {
@@ -172,6 +222,7 @@ public:
                     else {
                         cout << player->get_name() << " passes" << endl;
                     }
+                     */
                 }
             }
         }

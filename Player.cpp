@@ -132,6 +132,7 @@ Card Simple::lead_card(const std::string& trump) {
     int iterator = 0;
     bool allCardsAreTrump = true;
     for (unsigned int card = 0; card < hand.size(); card++) {
+        
         if (!(hand[card].is_trump(trump))) {
             allCardsAreTrump = false;
             cardMax = hand[card];
@@ -169,15 +170,23 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     Card cardMax = hand[0];
     Card cardMin = hand[0];
     int iterator = 0;
+    bool isALedCard[hand.size()];
     bool hasLed = false;
     bool hasTrump = false;
+    string ledCardSuit = led_card.get_suit(trump);
+    //if a Simple Player can follow suit, they play the highest card
+    //that follows suit. Otherwise, they play the lowest card in their hand.
     
     //check to see if has led
     for (unsigned int card = 0; card < hand.size(); card++) {
-        if (hand[card].get_suit(trump) == led_card.get_suit(trump)) {
+        string cardSuit = hand[card].get_suit(trump);
+        if (cardSuit == ledCardSuit) {
+            isALedCard[card] = true;
+            cardMax = hand[card];
+            iterator = card;
             hasLed = true;
-            break;
         }
+        isALedCard[card] = false;
     }
     
     //check to see if has trump
@@ -188,9 +197,42 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
         }
     }
     
+    if (hasLed) {
+        for (unsigned int card = 0; card < hand.size(); card++) {
+            if ((isALedCard[card] == true) &&
+                (Card_less(cardMax, hand[card], led_card, trump))) {
+                cardMax = hand[card];
+                iterator = card;
+            }
+        }
+        hand.erase(hand.begin() + iterator);
+        return cardMax;
+    }
+    
+    //else if player doesn't have led
+    else {
+        //int card = 0;
+            for (unsigned int card = 1; card < hand.size(); card++) {
+                if (Card_less(hand[card], cardMin, trump)) {
+                    cardMin = hand[card];
+                    iterator = card;
+                }
+            }
+        hand.erase(hand.begin() + iterator);
+        return cardMin;
+    
+    }
+    
+    
+    
+    
+    /*
+    
+    
+    
     if (hasLed && hasTrump) {
         for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(cardMax, hand[card], led_card.get_suit())) {
+            if (Card_less(cardMax, hand[card], ledCardSuit)) {
                 cardMax = hand[card];
                 iterator = card;
             }
@@ -200,7 +242,7 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
     }
     else if (hasLed) {
         for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(cardMax, hand[card], led_card, trump)) {
+            if (Card_less(cardMax, hand[card], ledCardSuit)) {
                 cardMax = hand[card];
                 iterator = card;
             }
@@ -208,7 +250,7 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
         hand.erase(hand.begin() + iterator);
         return cardMax;
     }
-    /*
+    
     else if (hasTrump) {
         for (unsigned int card = 1; card < hand.size(); card++) {
             if (Card_less(cardMax, hand[card], trump)) {
@@ -219,7 +261,7 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
         hand.erase(hand.begin() + iterator);
         return cardMax;
     }
-     */
+     
     
     else {
         for (unsigned int card = 1; card < hand.size(); card++) {
@@ -233,7 +275,7 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
         return cardMin;
     }
     
-
+*/
 }
 
 class Human : public Player {
@@ -275,8 +317,9 @@ const std::string & Human::get_name() const{
 }
 
 void Human::add_card(const Card &c) {
-    sort(hand.begin(), hand.end());
+    //sort(hand.begin(), hand.end());
     hand.push_back(c);
+    sort(hand.begin(), hand.end());
     return;
 }
 
