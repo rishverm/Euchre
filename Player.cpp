@@ -57,6 +57,7 @@ const std::string& Simple::get_name() const {
 void Simple::add_card(const Card& c) {
 
     hand.push_back(c);
+    sort(hand.begin(), hand.end());
 
 }
 
@@ -124,6 +125,7 @@ void Simple::add_and_discard(const Card& upcard) {
     }
     Card discardedCard = hand[minIndex];
     hand.erase(hand.begin() + minIndex);
+    sort(hand.begin(), hand.end());
 }
 
 
@@ -218,56 +220,6 @@ Card Simple::play_card(const Card& led_card, const std::string& trump) {
 
 
 
-    /*
-
-
-
-    if (hasLed && hasTrump) {
-        for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(cardMax, hand[card], ledCardSuit)) {
-                cardMax = hand[card];
-                iterator = card;
-            }
-        }
-        hand.erase(hand.begin() + iterator);
-        return cardMax;
-    }
-    else if (hasLed) {
-        for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(cardMax, hand[card], ledCardSuit)) {
-                cardMax = hand[card];
-                iterator = card;
-            }
-        }
-        hand.erase(hand.begin() + iterator);
-        return cardMax;
-    }
-
-    else if (hasTrump) {
-        for (unsigned int card = 1; card < hand.size(); card++) {
-            if (Card_less(cardMax, hand[card], trump)) {
-                cardMax = hand[card];
-                iterator = card;
-            }
-        }
-        hand.erase(hand.begin() + iterator);
-        return cardMax;
-    }
-
-
-    else {
-        for (unsigned int card = 1; card < hand.size(); card++) {
-            //is this the right card_less function
-            if (Card_less(hand[card], cardMin, led_card, trump)) {
-                cardMin = hand[card];
-                iterator = card;
-            }
-        }
-        hand.erase(hand.begin() + iterator);
-        return cardMin;
-    }
-
-*/
 }
 
 class Human : public Player {
@@ -322,9 +274,11 @@ bool Human::make_trump(const Card& upcard, bool is_dealer,
     for (unsigned int card = 0; card < hand.size(); card++) {
         cout << "Human player " << get_name()
             << "'s hand: [" << card << "] "
-            << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+            << hand[card].get_rank() << " of "
+            << hand[card].get_suit() << endl;
     }
-    cout << "Human player " << get_name() << ", please enter a suit or \"pass\":" << endl;
+    cout << "Human player " << get_name()
+        << ", please enter a suit, or \"pass\":" << endl;
     if (suit == "pass") {
         return false;
     }
@@ -340,10 +294,12 @@ void Human::add_and_discard(const Card& upcard) {
     for (unsigned int card = 0; card < hand.size(); card++) {
         cout << "Human player " << get_name()
             << "'s hand: [" << card << "] "
-            << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+            << hand[card].get_rank() << " of "
+            << hand[card].get_suit() << endl;
     }
     cout << "Discard upcard : [-1]" << endl;
-    cout << "Human player " << get_name() << ", please select a card : " << endl;
+    cout << "Human player " << get_name()
+        << ", please select a card : " << endl;
     cin >> cardDiscardNum;
     if (cardDiscardNum != -1) {
         hand.erase(hand.begin() + cardDiscardNum);
@@ -357,9 +313,11 @@ Card Human::lead_card(const std::string& trump) {
     for (unsigned int card = 0; card < hand.size(); card++) {
         cout << "Human player " << get_name()
             << "'s hand: [" << card << "] "
-            << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+            << hand[card].get_rank()
+            << " of " << hand[card].get_suit() << endl;
     }
-    cout << "Human player " + get_name() + ", please select a card:" << endl;
+    cout << "Human player " + get_name() + ", please select a card:"
+        << endl;
     cin >> cardLeadNum;
     Card lead = hand[cardLeadNum];
     hand.erase(hand.begin() + cardLeadNum);
@@ -372,9 +330,11 @@ Card Human::play_card(const Card& led_card, const std::string& trump) {
     for (unsigned int card = 0; card < hand.size(); card++) {
         cout << "Human player " << get_name()
             << "'s hand: [" << card << "] "
-            << hand[card].get_rank() << " of " << hand[card].get_suit() << endl;
+            << hand[card].get_rank() << " of "
+        << hand[card].get_suit() << endl;
     }
-    cout << "Human player " + get_name() + ", please select a card:" << endl;
+    cout << "Human player " + get_name() + ", please select a card:"
+        << endl;
     cin >> cardPlayNum;
     Card play = hand[cardPlayNum];
     hand.erase(hand.begin() + cardPlayNum);

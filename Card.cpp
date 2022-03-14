@@ -383,7 +383,7 @@ bool Card_less(const Card& a, const Card& b, const std::string& trump) {
 //trump suit > led suit > non-trump && non-led suit
 bool Card_less(const Card& a, const Card& b, const Card& led_card,
     const std::string& trump) {
-    string ledSuit = led_card.get_suit();
+    string ledSuit = led_card.get_suit(trump);
 
     
     

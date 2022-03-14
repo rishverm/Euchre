@@ -142,10 +142,19 @@ public:
         return upCard;
     }
     
-    void DealerAddAndDiscard(Card upCard) {
-        ordered[0]->add_and_discard(upCard);
+    void DealerAddAndDiscard(Card upCard, int j) {
+        if (j == 2) {
+            return;
+        }
+        for (int i = 0; i < 4; ++i) {
+            if (is_dealer(players[i])) {
+                players[i]->add_and_discard(upCard);
+            }
+        }
+        
         
     }
+     
 
     bool is_dealer(Player* player) {
         if (players[dealer_index(hand)] == player) {
@@ -194,60 +203,32 @@ public:
 
     string makingTrump(Card upCard) {
         string trump = "";
-        for (int j = 1; j <= 2; ++j) {
+        int j = 1;
+        while(j <= 2) {
+            
             for (int i = 0; i < 4; ++i) {
                 //Player *player = ordered[i];
                 string upCardSuit = upCard.get_suit();
-                if (strategies[i] == "Simple") {
 
-                    while (trump == "" && i < 4) {
+                    while (trump == "" && i < 4 && strategies[i] == "Simple") {
                         trump = simpleMakeTrump(upCard, ordered[i], j);
                         ++i;
                     }
 
-                    /*
-                    if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
-                        trump = upCardSuit;
-                        orderedUp = ordered[i];
-                        cout << player->get_name() << " orders up " << upCardSuit << endl;
-                        cout << endl;
-                        break;
-                    }
-                    else {
-                        cout << player->get_name() << " passes" << endl;
-                    }
-                     */
-
-                }
-                else {
-
-                    while (trump == "" && i < 4) {
+                    while (trump == "" && i < 4 && strategies[i] == "Simple") {
                         trump = humanMakeTrump(upCard, ordered[i], j);
                         ++i;
                     }
-                    /*
-
-                    if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
-                        cin >> trump;
-                        if (trump != "pass") {
-                            cout << player->get_name() << " orders up " << trump << endl;
-                            cout << endl;
-                            return trump;
-                        }
-                    }
-
-                    else {
-                        cout << player->get_name() << " passes" << endl;
-                    }
-                     */
-                }
-                //if (j == 1) {
-                   // DealerAddAndDiscard(upCard);
-               // }
+               
             }
-        }
+            if (trump != "" && j == 1) {
+                DealerAddAndDiscard(upCard, j);
+                j = 3;
+            }
+        
+        ++j;
+    }
         return trump;
-
     }
 
     int getIndex(Player* player) {
@@ -338,14 +319,15 @@ public:
 
             if (maxCard == ledCard) {
                 cout << ordered[0]->get_name() << " takes the trick" << endl;
-                ++numTricks[0];
+                
+                ++numTricks[getTeam(ordered[0])];
                 shiftOrdered(ordered[0]);
                 //newindex starts at player after player0
             }
 
             else if (maxCard == card1) {
                 cout << ordered[1]->get_name() << " takes the trick" << endl;
-                ++numTricks[1];
+                ++numTricks[getTeam(ordered[1])];
                 shiftOrdered(ordered[1]);
 
                 //new index starts at player after player1
@@ -353,18 +335,29 @@ public:
 
             else if (maxCard == card2) {
                 cout << ordered[2]->get_name() << " takes the trick" << endl;
-                ++numTricks[0];
+                ++numTricks[getTeam(ordered[2])];
                 shiftOrdered(ordered[2]);
             }
 
             else {
                 cout << ordered[3]->get_name() << " takes the trick" << endl;
-                ++numTricks[1];
+                ++numTricks[getTeam(ordered[3])];
                 shiftOrdered(ordered[3]);
             }
             cout << endl;
         }
 
+    }
+    
+    int getTeam(Player *player) {
+            if (player->get_name() == players[0]->get_name() ||
+                player->get_name() == players[2]->get_name()) {
+                return 0;
+            }
+            else {
+                return 1;
+            }
+        
     }
 
     int orderedUpTeamIndex() {
@@ -380,38 +373,46 @@ public:
 
     int scoring() {
         int winningTeam = -1;
-        int losingTeam = -1;
+        
         if (numTricks[0] > numTricks[1]) {
             winningTeam = 0;
-            losingTeam = 1;
+          
         }
         else {
             winningTeam = 1;
-            losingTeam = 0;
+            
         }
         cout << team[winningTeam] << " win the hand" << endl;
-
-        if (numTricks[winningTeam] == 5) {
-            cout << "march!" << endl;
-            handScore[winningTeam] = 2;
-            score[winningTeam] += handScore[winningTeam];
-        }
 
         if (winningTeam != orderedUpTeamIndex()) {
             cout << "euchred!" << endl;
             handScore[winningTeam] = 2;
             score[winningTeam] += handScore[winningTeam];
         }
-
-        else {
-            handScore[winningTeam] = 1;
+        
+        else if (numTricks[winningTeam] == 5) {
+            cout << "march!" << endl;
+            handScore[winningTeam] = 2;
             score[winningTeam] += handScore[winningTeam];
         }
 
-        cout << team[winningTeam] << " have " << score[winningTeam] << " points" << endl;
-        cout << team[losingTeam] << " have " << score[losingTeam] << " points" << endl;
 
+        if (numTricks[winningTeam] != 5 &&
+            winningTeam == orderedUpTeamIndex()) {
+            handScore[winningTeam] = 1;
+            score[winningTeam] += handScore[winningTeam];
+        }
+        
+        
+            cout << team[0] << " have " << score[0] << " points" << endl;
+            cout << team[1] << " have " << score[1] << " points" << endl;
+        
+        
+        handScore[0] = 0;
+        handScore[1] = 0;
 
+        numTricks[0] = 0;
+        numTricks[1] = 0;
         return score[winningTeam];
 
 
@@ -420,6 +421,7 @@ public:
     void printWinners() {
         if (score[0] > score[1]) {
             cout << team[0] << " win!" << endl;
+            
         }
         else {
             cout << team[1] << " win!" << endl;
