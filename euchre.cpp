@@ -67,9 +67,19 @@ public:
 
         for (int i = 0; i < number; i++) {
             if (pack.empty()) {
-                pack.reset();
+                shuffleFunction();
+                
             }
             player->add_card(pack.deal_one());
+        }
+    }
+    
+    void shuffleFunction() {
+        if (shuffle == "shuffle") {
+            pack.shuffle();
+        }
+        else {
+            pack.reset();
         }
     }
 
@@ -114,15 +124,11 @@ public:
         //if hand = 4, player 0 deals
     }
 
+    
 
 
     Card setUpTable(int hand) {
-        if (shuffle == "shuffle") {
-            pack.shuffle();
-        }
-        else {
-            pack.reset();
-        }
+        shuffleFunction();
 
         deal(players[dealer_index(hand)]);
         //WE MIGHT NEED TO ITERATE HAND HERE
@@ -134,6 +140,11 @@ public:
             << upCard.get_suit() << " turned up" << endl;
 
         return upCard;
+    }
+    
+    void DealerAddAndDiscard(Card upCard) {
+        ordered[0]->add_and_discard(upCard);
+        
     }
 
     bool is_dealer(Player* player) {
@@ -147,10 +158,12 @@ public:
 
     string simpleMakeTrump(Card upCard, Player* player, int j) {
         string upCardSuit = upCard.get_suit();
+        //
         if (player->make_trump(upCard, is_dealer(player), j, upCardSuit)) {
             orderedUp = player;
             cout << player->get_name() << " orders up " << upCardSuit << endl;
             cout << endl;
+            
             return upCardSuit;
         }
         else {
@@ -166,6 +179,7 @@ public:
             if (upCardSuit != "pass") {
                 cout << player->get_name() << " orders up " << upCardSuit << endl;
                 cout << endl;
+                
                 return upCardSuit;
             }
             else {
@@ -227,6 +241,9 @@ public:
                     }
                      */
                 }
+                //if (j == 1) {
+                   // DealerAddAndDiscard(upCard);
+               // }
             }
         }
         return trump;
@@ -293,6 +310,7 @@ public:
 
     void trickTaking(string trump) {
         for (int i = 0; i < 5; ++i) {
+            
             Card ledCard = ordered[0]->lead_card(trump);
             cout << ledCard.get_rank() << " of "
                 << ledCard.get_suit() << " led by "
