@@ -1,7 +1,7 @@
 EECS 280 Project 3 Solution
 ===========================
 Euchre
-By Rish Verma <rishvermverm> and Jenna Elwing <jelwing@umich.edu>
+This project was by Rishabh Verma <rishverm@umich.edu> and Jenna Elwing <jelwing@umich.edu> for EECS 280 W21
 
 # Quick start
 ```console
